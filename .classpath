@@ -2,7 +2,10 @@
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="/home/plamen/Documents/SWTLib/swt_linux_x64.jar" sourcepath="/home/plamen/Documents/SWTLib/swt_linux_x64/src"/>
-	<classpathentry kind="lib" path="/home/plamen/Documents/SWTLib/java_mqtt/org.eclipse.paho.client.mqttv3-1.2.0.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.paho.client.mqtt.jar"/>
+	<classpathentry kind="lib" path="lib/swt_win_x64.jar"/>
+	<classpathentry kind="lib" path="lib/swt_linux_x64.jar"/>
+	<classpathentry kind="lib" path="lib/swt_linux_x86.jar"/>
+	<classpathentry kind="lib" path="lib/swt_win_x86.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
