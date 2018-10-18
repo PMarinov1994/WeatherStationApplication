@@ -23,8 +23,8 @@ public class ProgramEntry
         di.registerInstance(GlobalResources.LIVING_ROOM_INSTANCE_MODEL_NAME, livingRoomSensorModel);
         di.registerInstance(GlobalResources.BED_ROOM_INSTANCE_MODEL_NAME, bedRoomSensorModel);
 
-        MqttWorker worker = new MqttWorker();
-        worker.doWork();
+        // MqttWorker worker = new MqttWorker();
+        // worker.doWork();
 
         MainView mainView = new MainView();
         mainView.show();

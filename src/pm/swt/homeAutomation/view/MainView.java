@@ -3,7 +3,12 @@ package pm.swt.homeAutomation.view;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
 import pm.swt.homeAutomation.model.TempHumSensor;
@@ -19,15 +24,8 @@ public class MainView
         Display display = new Display();
         Shell shell = new Shell(display);
 
-        shell.setLayout(new FillLayout(SWT.HORIZONTAL));
-
-        DependencyIndector di = DependencyIndector.getInstance();
-
-        TempHumSensor bedRoomModel = (TempHumSensor) di.resolveInstance(GlobalResources.BED_ROOM_INSTANCE_MODEL_NAME);
-        TempHumSensor livingRoomModel = (TempHumSensor) di.resolveInstance(GlobalResources.LIVING_ROOM_INSTANCE_MODEL_NAME);
-
-        new TempHumSensorView(shell, new TempHumSensorViewModel(bedRoomModel, "Bed Room"));
-        new TempHumSensorView(shell, new TempHumSensorViewModel(livingRoomModel, "Living Room"));
+        shell.setLayout(new FillLayout());
+        this.createContent(shell);
 
         shell.open();
 
@@ -49,5 +47,36 @@ public class MainView
 
         // disposes all associated windows and their components
         display.dispose();
+    }
+
+
+
+    private void createContent(Composite parent)
+    {
+        final int GRID_COLS = 2;
+        
+        Composite mainComp = new Composite(parent, SWT.NONE);
+        
+        GridLayout gridLayout = new GridLayout(GRID_COLS, true);
+        gridLayout.marginWidth = 0;
+        gridLayout.marginHeight = 0;
+        gridLayout.verticalSpacing = 0;
+        gridLayout.horizontalSpacing = 0;
+        mainComp.setLayout(gridLayout);
+
+        StatusBarView statusBar = new StatusBarView(mainComp);
+        GridData statusBarGridData = new GridData(SWT.FILL, SWT.TOP, true, false);
+        statusBarGridData.horizontalSpan = GRID_COLS;
+        statusBar.setLayoutData(statusBarGridData);
+
+        DependencyIndector di = DependencyIndector.getInstance();
+
+        TempHumSensor bedRoomModel = (TempHumSensor) di.resolveInstance(GlobalResources.BED_ROOM_INSTANCE_MODEL_NAME);
+        TempHumSensorView bedRoomView = new TempHumSensorView(mainComp, new TempHumSensorViewModel(bedRoomModel, "Bed Room"));
+        bedRoomView.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+        TempHumSensor livingRoomModel = (TempHumSensor) di.resolveInstance(GlobalResources.LIVING_ROOM_INSTANCE_MODEL_NAME);
+        TempHumSensorView livingRoomView = new TempHumSensorView(mainComp, new TempHumSensorViewModel(livingRoomModel, "Living Room"));
+        livingRoomView.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
     }
 }
