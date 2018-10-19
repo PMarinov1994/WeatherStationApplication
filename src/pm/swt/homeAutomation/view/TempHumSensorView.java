@@ -6,23 +6,16 @@ import java.beans.PropertyChangeListener;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 
 import pm.swt.homeAutomation.viewModel.TempHumSensorViewModel;
 
 
-public class TempHumSensorView extends Composite
+public class TempHumSensorView extends BaseView
 {
     private TempHumSensorViewModel viewModel;
 
@@ -40,11 +33,11 @@ public class TempHumSensorView extends Composite
             {
             case TempHumSensorViewModel.TEMPERATURE_PROP_NAME:
                 tempLabel.setText((String) evt.getNewValue());
-                setLabelOptimalFontSize(tempLabel);
+                onCtrlTextChange(tempLabel);
                 break;
             case TempHumSensorViewModel.HUMIDITY_PROP_NAME:
                 humLabel.setText((String) evt.getNewValue());
-                setLabelOptimalFontSize(humLabel);
+                onCtrlTextChange(humLabel);
                 break;
             default:
                 break;
@@ -62,20 +55,15 @@ public class TempHumSensorView extends Composite
         this.viewModel.addPropertyChangeListener(this.listener);
         this.createComposite(this);
 
-        parent.addListener(SWT.Resize, new Listener()
-        {
-
-            @Override
-            public void handleEvent(Event event)
-            {
-                changeFont();
-            }
-        });
+        this.registerResizableControl(header);
+        this.registerResizableControl(tempLabel);
+        this.registerResizableControl(humLabel);
     }
 
 
 
-    private void createComposite(Composite parent)
+    @Override
+    protected void createComposite(Composite parent)
     {
         Display display = parent.getDisplay();
         Color foregroundColor = display.getSystemColor(SWT.COLOR_WHITE);
@@ -114,15 +102,6 @@ public class TempHumSensorView extends Composite
 
 
 
-    public void changeFont()
-    {
-        setLabelOptimalFontSize(header);
-        setLabelOptimalFontSize(tempLabel);
-        setLabelOptimalFontSize(humLabel);
-    }
-
-
-
     @Override
     public void dispose()
     {
@@ -136,29 +115,4 @@ public class TempHumSensorView extends Composite
     }
 
 
-
-    private void setLabelOptimalFontSize(CLabel control)
-    {
-        Point size = control.getSize();
-
-        FontData[] fontData = control.getFont().getFontData();
-
-        int textLen = control.getText().length();
-        int charWidth = size.x / textLen;
-
-        fontData[0].setHeight(charWidth);
-
-        Font font = new Font(Display.getCurrent(), fontData[0]);
-        control.setFont(font);
-
-        control.addDisposeListener(new DisposeListener()
-        {
-
-            @Override
-            public void widgetDisposed(DisposeEvent e)
-            {
-                font.dispose();
-            }
-        });
-    }
 }

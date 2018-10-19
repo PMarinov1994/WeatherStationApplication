@@ -1,11 +1,10 @@
 package pm.swt.homeAutomation;
 
 import pm.swt.homeAutomation.model.TempHumSensor;
-import pm.swt.homeAutomation.mqtt.MqttWorker;
 import pm.swt.homeAutomation.utils.DependencyIndector;
 import pm.swt.homeAutomation.utils.GlobalResources;
 import pm.swt.homeAutomation.utils.SwtClassLoader;
-import pm.swt.homeAutomation.view.MainView;
+import pm.swt.homeAutomation.view.HomeAutomationWindow;
 
 
 public class ProgramEntry
@@ -26,7 +25,7 @@ public class ProgramEntry
         // MqttWorker worker = new MqttWorker();
         // worker.doWork();
 
-        MainView mainView = new MainView();
+        HomeAutomationWindow mainView = new HomeAutomationWindow();
         mainView.show();
 
         // worker.dispose();
