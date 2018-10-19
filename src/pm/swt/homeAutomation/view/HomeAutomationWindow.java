@@ -11,9 +11,11 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
+import pm.swt.homeAutomation.model.StatusBar;
 import pm.swt.homeAutomation.model.TempHumSensor;
 import pm.swt.homeAutomation.utils.DependencyIndector;
 import pm.swt.homeAutomation.utils.GlobalResources;
+import pm.swt.homeAutomation.viewModel.StatusBarViewModel;
 import pm.swt.homeAutomation.viewModel.TempHumSensorViewModel;
 
 
@@ -22,9 +24,11 @@ public class HomeAutomationWindow
     private Display display;
     private Shell shell;
 
-    BaseView statusBarView;
-    BaseView bedRoomView;
-    BaseView livingRoomView;
+    private BaseView statusBarView;
+    private BaseView bedRoomView;
+    private BaseView livingRoomView;
+
+    private DependencyIndector di = DependencyIndector.getInstance();
 
 
 
@@ -35,7 +39,7 @@ public class HomeAutomationWindow
         this.shell.setLayout(new FillLayout());
 
         this.createContent(this.shell);
-        
+
         this.shell.addListener(SWT.Resize, new Listener()
         {
             @Override
@@ -87,12 +91,12 @@ public class HomeAutomationWindow
         gridLayout.horizontalSpacing = 0;
         mainComp.setLayout(gridLayout);
 
-        statusBarView = new StatusBarView(mainComp);
+        StatusBar statusBarModel = (StatusBar) di.resolveInstance(GlobalResources.STATUS_BAR_INSTANCE_MODEL_NAME);
+        statusBarView = new StatusBarView(mainComp, new StatusBarViewModel(statusBarModel));
+
         GridData statusBarGridData = new GridData(SWT.FILL, SWT.TOP, true, false);
         statusBarGridData.horizontalSpan = GRID_COLS;
         statusBarView.setLayoutData(statusBarGridData);
-
-        DependencyIndector di = DependencyIndector.getInstance();
 
         TempHumSensor bedRoomModel = (TempHumSensor) di.resolveInstance(GlobalResources.BED_ROOM_INSTANCE_MODEL_NAME);
         bedRoomView = new TempHumSensorView(mainComp, new TempHumSensorViewModel(bedRoomModel, "Bed Room"));

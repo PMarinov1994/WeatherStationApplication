@@ -1,5 +1,8 @@
 package pm.swt.homeAutomation.view;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.graphics.Color;
@@ -8,17 +11,34 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 
+import pm.swt.homeAutomation.viewModel.StatusBarViewModel;
+
 
 public class StatusBarView extends BaseView
 {
     private final int HEIGHT_RATIO = 6;
+
     private CLabel timeLabel;
+    private StatusBarViewModel viewModel;
+
+    private PropertyChangeListener listener = new PropertyChangeListener()
+    {
+
+        @Override
+        public void propertyChange(PropertyChangeEvent evt)
+        {
+
+        }
+    };
 
 
 
-    public StatusBarView(Composite parent)
+    public StatusBarView(Composite parent, StatusBarViewModel viewModel)
     {
         super(parent, SWT.NONE);
+
+        this.viewModel = viewModel;
+        this.viewModel.addPropertyChangeListener(this.listener);
         this.createComposite(this);
     }
 
@@ -31,14 +51,14 @@ public class StatusBarView extends BaseView
 
         Color backgroundColor = parent.getDisplay().getSystemColor(SWT.COLOR_BLACK);
         Color foregroundColor = parent.getDisplay().getSystemColor(SWT.COLOR_WHITE);
-        
+
         parent.setBackground(backgroundColor);
         parent.setForeground(foregroundColor);
-        
+
         timeLabel = new CLabel(parent, SWT.None);
         timeLabel.setBackground(backgroundColor);
         timeLabel.setForeground(foregroundColor);
-        
+
         this.registerResizableControl(timeLabel);
         timeLabel.setText("00:00");
     }
@@ -53,13 +73,13 @@ public class StatusBarView extends BaseView
         {
             GridData gridData = (GridData) layoutData;
             gridData.heightHint = this.getParent().getBounds().height / HEIGHT_RATIO;
-            
+
             Point newSize = this.timeLabel.getSize();
             newSize.y = gridData.heightHint;
             newSize.x = gridData.heightHint * 3;
-            this.timeLabel.setSize(newSize);            
+            this.timeLabel.setSize(newSize);
         }
-        
+
         super.onResize();
     }
 }
