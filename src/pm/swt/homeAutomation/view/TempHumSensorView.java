@@ -105,10 +105,6 @@ public class TempHumSensorView extends BaseView
     @Override
     public void dispose()
     {
-        this.header.getFont().dispose();
-        this.tempLabel.getFont().dispose();
-        this.humLabel.getFont().dispose();
-
         this.viewModel.removePropertyChangeListener(this.listener);
         this.viewModel.dispose();
         super.dispose();

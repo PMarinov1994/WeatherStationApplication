@@ -27,7 +27,14 @@ public class StatusBarView extends BaseView
         @Override
         public void propertyChange(PropertyChangeEvent evt)
         {
-
+            switch (evt.getPropertyName())
+            {
+            case StatusBarViewModel.TIME_PROP_NAME:
+                timeLabel.setText((String) evt.getNewValue());
+                break;
+            default:
+                break;
+            }
         }
     };
 
@@ -81,5 +88,15 @@ public class StatusBarView extends BaseView
         }
 
         super.onResize();
+    }
+
+
+
+    @Override
+    public void dispose()
+    {
+        this.viewModel.removePropertyChangeListener(this.listener);
+        this.viewModel.dispose();
+        super.dispose();
     }
 }

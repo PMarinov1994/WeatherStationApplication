@@ -2,10 +2,13 @@ package pm.swt.homeAutomation.view;
 
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -24,9 +27,26 @@ public class HomeAutomationWindow
     private Display display;
     private Shell shell;
 
-    private BaseView statusBarView;
-    private BaseView bedRoomView;
-    private BaseView livingRoomView;
+    private Listener resizeListener = new Listener()
+    {
+
+        @Override
+        public void handleEvent(Event event)
+        {
+            onResize();
+        }
+    };
+
+    private DisposeListener shellDisposeListener = new DisposeListener()
+    {
+
+        @Override
+        public void widgetDisposed(DisposeEvent e)
+        {
+            shell.removeListener(SWT.Resize, resizeListener);
+            shell.removeDisposeListener(shellDisposeListener);
+        }
+    };
 
     private DependencyIndector di = DependencyIndector.getInstance();
 
@@ -40,22 +60,16 @@ public class HomeAutomationWindow
 
         this.createContent(this.shell);
 
-        this.shell.addListener(SWT.Resize, new Listener()
-        {
-            @Override
-            public void handleEvent(Event event)
-            {
-                onResize();
-            }
-        });
+        this.shell.addListener(SWT.Resize, this.resizeListener);
+        this.shell.addDisposeListener(this.shellDisposeListener);
     }
 
 
 
     public void show()
     {
-        shell.setMaximized(true);
-        shell.setFullScreen(true);
+        // shell.setMaximized(true);
+        // shell.setFullScreen(true);
         shell.open();
 
         this.onResize();
@@ -92,18 +106,18 @@ public class HomeAutomationWindow
         mainComp.setLayout(gridLayout);
 
         StatusBar statusBarModel = (StatusBar) di.resolveInstance(GlobalResources.STATUS_BAR_INSTANCE_MODEL_NAME);
-        statusBarView = new StatusBarView(mainComp, new StatusBarViewModel(statusBarModel));
+        StatusBarView statusBarView = new StatusBarView(mainComp, new StatusBarViewModel(statusBarModel));
 
         GridData statusBarGridData = new GridData(SWT.FILL, SWT.TOP, true, false);
         statusBarGridData.horizontalSpan = GRID_COLS;
         statusBarView.setLayoutData(statusBarGridData);
 
         TempHumSensor bedRoomModel = (TempHumSensor) di.resolveInstance(GlobalResources.BED_ROOM_INSTANCE_MODEL_NAME);
-        bedRoomView = new TempHumSensorView(mainComp, new TempHumSensorViewModel(bedRoomModel, "Bed Room"));
+        TempHumSensorView bedRoomView = new TempHumSensorView(mainComp, new TempHumSensorViewModel(bedRoomModel, "Bed Room"));
         bedRoomView.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
         TempHumSensor livingRoomModel = (TempHumSensor) di.resolveInstance(GlobalResources.LIVING_ROOM_INSTANCE_MODEL_NAME);
-        livingRoomView = new TempHumSensorView(mainComp, new TempHumSensorViewModel(livingRoomModel, "Living Room"));
+        TempHumSensorView livingRoomView = new TempHumSensorView(mainComp, new TempHumSensorViewModel(livingRoomModel, "Living Room"));
         livingRoomView.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
     }
 
@@ -111,10 +125,21 @@ public class HomeAutomationWindow
 
     private void onResize()
     {
-        bedRoomView.onResize();
-        livingRoomView.onResize();
-        statusBarView.onResize();
-
+        this.resizeChildCtrls(this.shell);
         shell.layout(true, true);
+    }
+
+
+
+    private void resizeChildCtrls(Composite composite)
+    {
+        Control[] children = composite.getChildren();
+        for (Control control : children)
+        {
+            if (control instanceof BaseView)
+                ((BaseView) control).onResize();
+            else if (control instanceof Composite)
+                this.resizeChildCtrls((Composite) control);
+        }
     }
 }

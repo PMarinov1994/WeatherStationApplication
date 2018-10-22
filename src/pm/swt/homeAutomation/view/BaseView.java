@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.swt.custom.CLabel;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
@@ -20,6 +22,16 @@ public abstract class BaseView extends Composite
     public BaseView(Composite parent, int style)
     {
         super(parent, style);
+
+        this.addDisposeListener(new DisposeListener()
+        {
+
+            @Override
+            public void widgetDisposed(DisposeEvent e)
+            {
+                dispose();
+            }
+        });
     }
 
 
@@ -28,6 +40,17 @@ public abstract class BaseView extends Composite
     {
         for (CLabel ctrl : this.resizableControls.keySet())
             this.setNewFont(ctrl);
+    }
+
+
+
+    @Override
+    public void dispose()
+    {
+        for (Font font : this.resizableControls.values())
+            font.dispose();
+
+        super.dispose();
     }
 
 

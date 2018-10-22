@@ -12,9 +12,9 @@ public class TimeKeeper
 
 
 
-    public void startRunning()
+    public void startRunning(StatusBar statusBar)
     {
-        this.thread = new Thread(new Worker());
+        this.thread = new Thread(new Worker(statusBar));
         this.isRunning = true;
         this.thread.start();
     }
@@ -42,10 +42,9 @@ public class TimeKeeper
 
 
 
-        public Worker()
+        public Worker(StatusBar statusBarModel)
         {
-            DependencyIndector di = DependencyIndector.getInstance();
-            this.statusBarModel = (StatusBar) di.resolveInstance(GlobalResources.STATUS_BAR_INSTANCE_MODEL_NAME);
+            this.statusBarModel = statusBarModel;
         }
 
 
