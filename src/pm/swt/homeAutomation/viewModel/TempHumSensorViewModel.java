@@ -13,6 +13,8 @@ public class TempHumSensorViewModel extends BaseModel
     public static final String HUMIDITY_PROP_NAME = "humidity";
     public static final String HOME_SECTOR_PROP_NAME = "homeSector";
 
+    public static final String TEMP_CEL_SIM = "\u2103";
+
     private TempHumSensor model;
 
     private String temperature;
@@ -47,8 +49,10 @@ public class TempHumSensorViewModel extends BaseModel
         this.homeSector = homeSector;
         this.model.addPropertyChangeListener(this.listener);
 
-        this.formatHum(this.model.getHumidity());
-        this.formatTemp(this.model.getTempreture());
+        // this.formatHum(this.model.getHumidity());
+        // this.formatTemp(this.model.getTempreture());
+        this.temperature = "N/A" + TEMP_CEL_SIM;
+        this.humidity = "N/A%";
     }
 
 

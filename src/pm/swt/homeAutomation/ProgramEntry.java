@@ -33,7 +33,7 @@ public class ProgramEntry
         HomeAutomationWindow mainView = new HomeAutomationWindow();
         mainView.show();
 
-        // worker.dispose();
+        worker.dispose();
     }
 
 }
