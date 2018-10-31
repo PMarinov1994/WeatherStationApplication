@@ -1,5 +1,8 @@
 package pm.swt.homeAutomation.mqtt;
 
+import java.io.File;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
 import java.util.UUID;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -7,6 +10,7 @@ import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.persist.MqttDefaultFilePersistence;
 import org.eclipse.swt.widgets.Display;
 
 import pm.swt.homeAutomation.model.TempHumSensor;
@@ -19,13 +23,32 @@ public class MqttWorker
     private static final String MQTT_SERVER_ADDRESS = "tcp://192.168.200.105:1883";
     private static final String[] MQTT_TOPICS = { "bedroom/#", "livingRoom/#" };
 
+    private static final String MQTT_QOS_SUB_FOLDER = "mqttQOS";
+
     private MqttClient client;
     private MqttWorkerCallback callBack;
+
+    private final String mqttQosFolder;
 
 
 
     public MqttWorker()
     {
+        String jarExePath = "";
+        try
+        {
+            jarExePath = this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+        }
+        catch (URISyntaxException e)
+        {
+            e.printStackTrace();
+        }
+
+        this.mqttQosFolder = String.format("%s%s%s", jarExePath, File.separator, MQTT_QOS_SUB_FOLDER);
+        
+        File dirQos = new File(this.mqttQosFolder);
+        if (!dirQos.exists())
+            dirQos.mkdirs();
     }
 
 
@@ -34,7 +57,11 @@ public class MqttWorker
     {
         try
         {
-            this.client = new MqttClient(MQTT_SERVER_ADDRESS, UUID.randomUUID().toString());
+            this.client = new MqttClient(
+                    MQTT_SERVER_ADDRESS,
+                    UUID.randomUUID().toString(),
+                    new MqttDefaultFilePersistence(this.mqttQosFolder));
+
             this.callBack = new MqttWorkerCallback();
 
             System.out.println("Connection to MQTT Server...");
@@ -66,6 +93,13 @@ public class MqttWorker
         {
             e.printStackTrace();
         }
+    }
+
+
+
+    public String getMqttQosFolder()
+    {
+        return mqttQosFolder;
     }
 
 
