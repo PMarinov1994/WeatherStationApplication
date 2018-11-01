@@ -248,7 +248,7 @@ public class TempHumSensorView extends BaseView
     /**
      * Creates an <code>Image</code> object from a given absolute or relative path.
      * Note: The returned object must be disposed when not needed anymore!
-     * 
+     *
      * @param path The Path to the image.
      * @return The created image object.
      */
@@ -285,7 +285,7 @@ public class TempHumSensorView extends BaseView
      * and created a new image with the appropriate size to fill <code>label</code>.
      * The <code>image</code> will be used only as reference to create the new image
      * with the correct size.
-     * 
+     *
      * @param label The label control to switch the new image will be set.
      * @param image A reference image from which the new image will be created.
      */
@@ -314,7 +314,7 @@ public class TempHumSensorView extends BaseView
     /**
      * Rescale an image object to the correct DPI.
      * NOTE: The returned image must be disposed when not needed anymore.
-     * 
+     *
      * @param image The image to correct.
      * @return The corrected image.
      */
@@ -345,7 +345,7 @@ public class TempHumSensorView extends BaseView
      * NOTE: The returned image will be disposed when this class
      * is no longer needed in its <code>Disposed()</code> method.
      * DO NOT DISPOSE THIS IMAGE.
-     * 
+     *
      * @param status
      * @return
      */
