@@ -18,6 +18,7 @@ import pm.swt.homeAutomation.model.StatusBar;
 import pm.swt.homeAutomation.model.TempHumSensor;
 import pm.swt.homeAutomation.utils.DependencyIndector;
 import pm.swt.homeAutomation.utils.GlobalResources;
+import pm.swt.homeAutomation.utils.StationLocation;
 import pm.swt.homeAutomation.viewModel.StatusBarViewModel;
 import pm.swt.homeAutomation.viewModel.TempHumSensorViewModel;
 
@@ -68,8 +69,8 @@ public class HomeAutomationWindow
 
     public void show()
     {
-        shell.setMaximized(true);
-        shell.setFullScreen(true);
+//        shell.setMaximized(true);
+//        shell.setFullScreen(true);
         shell.open();
 
         this.onResize();
@@ -113,11 +114,17 @@ public class HomeAutomationWindow
         statusBarView.setLayoutData(statusBarGridData);
 
         TempHumSensor bedRoomModel = (TempHumSensor) di.resolveInstance(GlobalResources.BED_ROOM_INSTANCE_MODEL_NAME);
-        TempHumSensorView bedRoomView = new TempHumSensorView(mainComp, new TempHumSensorViewModel(bedRoomModel, "Bed Room"));
+        TempHumSensorView bedRoomView = new TempHumSensorView(
+                mainComp,
+                new TempHumSensorViewModel(bedRoomModel, StationLocation.BED_ROOM));
+        
         bedRoomView.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
         TempHumSensor livingRoomModel = (TempHumSensor) di.resolveInstance(GlobalResources.LIVING_ROOM_INSTANCE_MODEL_NAME);
-        TempHumSensorView livingRoomView = new TempHumSensorView(mainComp, new TempHumSensorViewModel(livingRoomModel, "Living Room"));
+        TempHumSensorView livingRoomView = new TempHumSensorView(
+                mainComp,
+                new TempHumSensorViewModel(livingRoomModel, StationLocation.LIVING_ROOM));
+
         livingRoomView.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
     }
 

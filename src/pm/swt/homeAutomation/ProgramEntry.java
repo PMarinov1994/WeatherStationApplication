@@ -27,13 +27,13 @@ public class ProgramEntry
         di.registerInstance(GlobalResources.BED_ROOM_INSTANCE_MODEL_NAME, bedRoomSensorModel);
         di.registerInstance(GlobalResources.STATUS_BAR_INSTANCE_MODEL_NAME, statusBarModel);
 
-         MqttWorker worker = new MqttWorker();
-        // worker.doWork();
+//         MqttWorker worker = new MqttWorker();
+//         worker.doWork();
 
         HomeAutomationWindow mainView = new HomeAutomationWindow();
         mainView.show();
 
-        worker.dispose();
+//        worker.dispose();
     }
 
 }

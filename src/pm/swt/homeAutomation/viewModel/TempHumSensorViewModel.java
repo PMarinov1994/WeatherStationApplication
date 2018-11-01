@@ -5,6 +5,8 @@ import java.beans.PropertyChangeListener;
 
 import pm.swt.homeAutomation.model.BaseModel;
 import pm.swt.homeAutomation.model.TempHumSensor;
+import pm.swt.homeAutomation.utils.StationLocation;
+import pm.swt.homeAutomation.utils.StationStatus;
 
 
 public class TempHumSensorViewModel extends BaseModel
@@ -12,6 +14,7 @@ public class TempHumSensorViewModel extends BaseModel
     public static final String TEMPERATURE_PROP_NAME = "temperature";
     public static final String HUMIDITY_PROP_NAME = "humidity";
     public static final String HOME_SECTOR_PROP_NAME = "homeSector";
+    public static final String STATION_STATUS_PROP_NAME = "stationStatus";
 
     public static final String TEMP_CEL_SIM = "\u2103";
 
@@ -19,7 +22,8 @@ public class TempHumSensorViewModel extends BaseModel
 
     private String temperature;
     private String humidity;
-    private String homeSector;
+    private StationLocation homeSector;
+    private StationStatus stationStatus;
 
     private PropertyChangeListener listener = new PropertyChangeListener()
     {
@@ -35,6 +39,8 @@ public class TempHumSensorViewModel extends BaseModel
             case TempHumSensor.HUMIDITY_PROP_NAME:
                 formatHum((double) evt.getNewValue());
                 break;
+            case TempHumSensor.STATUS_PROP_NAME:
+                TempHumSensorViewModel.this.setStationStatus(TempHumSensorViewModel.this.model.getStatus());
             default:
                 break;
             }
@@ -43,7 +49,7 @@ public class TempHumSensorViewModel extends BaseModel
 
 
 
-    public TempHumSensorViewModel(TempHumSensor model, String homeSector)
+    public TempHumSensorViewModel(TempHumSensor model, StationLocation homeSector)
     {
         this.model = model;
         this.homeSector = homeSector;
@@ -92,14 +98,14 @@ public class TempHumSensorViewModel extends BaseModel
 
 
 
-    public String getHomeSector()
+    public StationLocation getHomeSector()
     {
         return homeSector;
     }
 
 
 
-    public void setHomeSector(String homeSector)
+    public void setHomeSector(StationLocation homeSector)
     {
         this.firePropertyChange(HOME_SECTOR_PROP_NAME, this.homeSector, this.homeSector = homeSector);
     }
@@ -116,5 +122,19 @@ public class TempHumSensorViewModel extends BaseModel
     public void formatHum(double hum)
     {
         this.setHumidity(String.format("%02.2f%%", hum));
+    }
+
+
+
+    public StationStatus getStationStatus()
+    {
+        return stationStatus;
+    }
+
+
+
+    public void setStationStatus(StationStatus stationStatus)
+    {
+        this.firePropertyChange(STATION_STATUS_PROP_NAME, this.homeSector, this.stationStatus = stationStatus);
     }
 }
