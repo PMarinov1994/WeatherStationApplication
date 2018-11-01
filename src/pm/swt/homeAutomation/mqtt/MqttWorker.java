@@ -44,7 +44,7 @@ public class MqttWorker
         }
 
         this.mqttQosFolder = String.format("%s%s%s", jarExePath, File.separator, MQTT_QOS_SUB_FOLDER);
-        
+
         File dirQos = new File(this.mqttQosFolder);
         if (!dirQos.exists())
             dirQos.mkdirs();
@@ -154,6 +154,7 @@ public class MqttWorker
                 {
                     double humidity;
                     double temperature;
+                    int refreshInterval;
 
                     switch (topic)
                     {
@@ -169,6 +170,12 @@ public class MqttWorker
 
                         break;
 
+                    case "bedroom/refreshInterval":
+                        refreshInterval = Integer.parseInt(messageStr);
+                        bedRoomSensorModel.setRefreshInterval(refreshInterval);
+
+                        break;
+
                     case "livingRoom/temperature":
                         temperature = Double.parseDouble(messageStr);
                         livingRoomSensorModel.setTempreture(temperature);
@@ -178,6 +185,12 @@ public class MqttWorker
                     case "livingRoom/humidity":
                         humidity = Double.parseDouble(messageStr);
                         livingRoomSensorModel.setHumidity(humidity);
+
+                        break;
+
+                    case "livingRoom/refreshInterval":
+                        refreshInterval = Integer.parseInt(messageStr);
+                        livingRoomSensorModel.setRefreshInterval(refreshInterval);
 
                         break;
 
