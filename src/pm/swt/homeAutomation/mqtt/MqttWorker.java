@@ -10,7 +10,6 @@ import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MqttDefaultFilePersistence;
-import org.eclipse.swt.widgets.Display;
 
 import pm.swt.homeAutomation.model.TempHumSensor;
 import pm.swt.homeAutomation.utils.DependencyIndector;
@@ -141,64 +140,51 @@ public class MqttWorker
             System.out.println(String.format("MQTT message arrived.\nTopic: %s\nMessage: %s",
                     topic, messageStr));
 
-            Display display = null;
-            if (Display.getCurrent() != null)
-                display = Display.getCurrent();
-            else
-                display = Display.getDefault();
+            double humidity;
+            double temperature;
+            int refreshInterval;
 
-            display.asyncExec(new Runnable()
+            switch (topic)
             {
-                @Override
-                public void run()
-                {
-                    double humidity;
-                    double temperature;
-                    int refreshInterval;
+            case "bedroom/temperature":
+                temperature = Double.parseDouble(messageStr);
+                bedRoomSensorModel.setTempreture(temperature);
 
-                    switch (topic)
-                    {
-                    case "bedroom/temperature":
-                        temperature = Double.parseDouble(messageStr);
-                        bedRoomSensorModel.setTempreture(temperature);
+                break;
 
-                        break;
+            case "bedroom/humidity":
+                humidity = Double.parseDouble(messageStr);
+                bedRoomSensorModel.setHumidity(humidity);
 
-                    case "bedroom/humidity":
-                        humidity = Double.parseDouble(messageStr);
-                        bedRoomSensorModel.setHumidity(humidity);
+                break;
 
-                        break;
+            case "bedroom/refreshInterval":
+                refreshInterval = Integer.parseInt(messageStr);
+                bedRoomSensorModel.setRefreshInterval(refreshInterval);
 
-                    case "bedroom/refreshInterval":
-                        refreshInterval = Integer.parseInt(messageStr);
-                        bedRoomSensorModel.setRefreshInterval(refreshInterval);
+                break;
 
-                        break;
+            case "livingRoom/temperature":
+                temperature = Double.parseDouble(messageStr);
+                livingRoomSensorModel.setTempreture(temperature);
 
-                    case "livingRoom/temperature":
-                        temperature = Double.parseDouble(messageStr);
-                        livingRoomSensorModel.setTempreture(temperature);
+                break;
 
-                        break;
+            case "livingRoom/humidity":
+                humidity = Double.parseDouble(messageStr);
+                livingRoomSensorModel.setHumidity(humidity);
 
-                    case "livingRoom/humidity":
-                        humidity = Double.parseDouble(messageStr);
-                        livingRoomSensorModel.setHumidity(humidity);
+                break;
 
-                        break;
+            case "livingRoom/refreshInterval":
+                refreshInterval = Integer.parseInt(messageStr);
+                livingRoomSensorModel.setRefreshInterval(refreshInterval);
 
-                    case "livingRoom/refreshInterval":
-                        refreshInterval = Integer.parseInt(messageStr);
-                        livingRoomSensorModel.setRefreshInterval(refreshInterval);
+                break;
 
-                        break;
-
-                    default:
-                        break;
-                    }
-                }
-            });
+            default:
+                break;
+            }
         }
 
 
@@ -206,7 +192,6 @@ public class MqttWorker
         @Override
         public void deliveryComplete(IMqttDeliveryToken token)
         {
-            // TODO Auto-generated method stub
         }
     }
 }

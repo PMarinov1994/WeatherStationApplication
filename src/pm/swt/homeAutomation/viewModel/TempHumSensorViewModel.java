@@ -3,10 +3,13 @@ package pm.swt.homeAutomation.viewModel;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import org.eclipse.swt.widgets.Display;
+
 import pm.swt.homeAutomation.model.BaseModel;
 import pm.swt.homeAutomation.model.TempHumSensor;
 import pm.swt.homeAutomation.utils.StationLocation;
 import pm.swt.homeAutomation.utils.StationStatus;
+import pm.swt.homeAutomation.utils.StationStatusTracker;
 
 
 public class TempHumSensorViewModel extends BaseModel
@@ -20,10 +23,12 @@ public class TempHumSensorViewModel extends BaseModel
 
     private TempHumSensor model;
 
-    private String temperature;
-    private String humidity;
+    private String temperature = "";
+    private String humidity = "";
     private StationLocation homeSector;
-    private StationStatus stationStatus;
+    private StationStatus stationStatus = StationStatus.STANDBY_STATUS;
+
+    private StationStatusTracker ssTracker;
 
     private PropertyChangeListener listener = new PropertyChangeListener()
     {
@@ -31,19 +36,7 @@ public class TempHumSensorViewModel extends BaseModel
         @Override
         public void propertyChange(PropertyChangeEvent evt)
         {
-            switch (evt.getPropertyName())
-            {
-            case TempHumSensor.TEMPRETURE_PROP_NAME:
-                formatTemp((double) evt.getNewValue());
-                break;
-            case TempHumSensor.HUMIDITY_PROP_NAME:
-                formatHum((double) evt.getNewValue());
-                break;
-            case TempHumSensor.STATUS_PROP_NAME:
-                TempHumSensorViewModel.this.setStationStatus(TempHumSensorViewModel.this.model.getStatus());
-            default:
-                break;
-            }
+            TempHumSensorViewModel.this.handlePropertyChanged(evt);
         }
     };
 
@@ -55,10 +48,19 @@ public class TempHumSensorViewModel extends BaseModel
         this.homeSector = homeSector;
         this.model.addPropertyChangeListener(this.listener);
 
-        // this.formatHum(this.model.getHumidity());
-        // this.formatTemp(this.model.getTempreture());
         this.temperature = "N/A" + TEMP_CEL_SIM;
         this.humidity = "N/A%";
+
+        this.ssTracker = new StationStatusTracker(model);
+        this.ssTracker.startTracking();
+    }
+
+
+
+    public void dispose()
+    {
+        this.ssTracker.stopTracking();
+        this.model.removePropertyChangeListener(this.listener);
     }
 
 
@@ -87,13 +89,6 @@ public class TempHumSensorViewModel extends BaseModel
     public void setHumidity(String humidity)
     {
         this.firePropertyChange(HUMIDITY_PROP_NAME, this.humidity, this.humidity = humidity);
-    }
-
-
-
-    public void dispose()
-    {
-        this.model.removePropertyChangeListener(this.listener);
     }
 
 
@@ -136,5 +131,37 @@ public class TempHumSensorViewModel extends BaseModel
     public void setStationStatus(StationStatus stationStatus)
     {
         this.firePropertyChange(STATION_STATUS_PROP_NAME, this.homeSector, this.stationStatus = stationStatus);
+    }
+
+
+
+    private void handlePropertyChanged(PropertyChangeEvent evt)
+    {
+        Display display = null;
+        if (Display.getCurrent() != null)
+            display = Display.getCurrent();
+        else
+            display = Display.getDefault();
+
+        display.asyncExec(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                switch (evt.getPropertyName())
+                {
+                case TempHumSensor.TEMPRETURE_PROP_NAME:
+                    formatTemp((double) evt.getNewValue());
+                    break;
+                case TempHumSensor.HUMIDITY_PROP_NAME:
+                    formatHum((double) evt.getNewValue());
+                    break;
+                case TempHumSensor.STATUS_PROP_NAME:
+                    TempHumSensorViewModel.this.setStationStatus(TempHumSensorViewModel.this.model.getStatus());
+                default:
+                    break;
+                }
+            }
+        });
     }
 }

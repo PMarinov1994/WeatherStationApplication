@@ -4,7 +4,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 
-public abstract class BaseModel
+public abstract class BaseModel implements IBindableBase
 {
     private final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
 

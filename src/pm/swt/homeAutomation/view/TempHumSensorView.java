@@ -159,7 +159,9 @@ public class TempHumSensorView extends BaseView
             @Override
             public void handleEvent(Event event)
             {
-                TempHumSensorView.this.changeLabelImage(TempHumSensorView.this.statusLabel, TempHumSensorView.this.standByImage);
+                TempHumSensorView.this.changeLabelImage(
+                        TempHumSensorView.this.statusLabel,
+                        TempHumSensorView.this.getStatusImage(TempHumSensorView.this.viewModel.getStationStatus()));
             }
         });
         this.statusLabel.addDisposeListener(new DisposeListener()
@@ -288,6 +290,7 @@ public class TempHumSensorView extends BaseView
      *
      * @param label The label control to switch the new image will be set.
      * @param image A reference image from which the new image will be created.
+     * This image WILL NOT BE DISPOSED!
      */
     private void changeLabelImage(Label label, Image image)
     {

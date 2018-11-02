@@ -3,17 +3,15 @@ package pm.swt.homeAutomation.model;
 import pm.swt.homeAutomation.utils.StationStatus;
 
 
-public class TempHumSensor extends BaseModel
+public class TempHumSensor extends BaseModel implements ITrackableStation
 {
     public static final String TEMPRETURE_PROP_NAME = "tempreture";
     public static final String HUMIDITY_PROP_NAME = "humidity";
-    public static final String STATUS_PROP_NAME = "status";
-    public static final String REFRESH_INTERVAL_PROP_NAME = "refreshInterval";
 
-    private double tempreture;
-    private double humidity;
-    private StationStatus status;
-    private int refreshInterval;
+    private double tempreture = 0;
+    private double humidity = 0;
+    private StationStatus status = StationStatus.STANDBY_STATUS;
+    private int refreshInterval = 0;
 
 
 
