@@ -6,6 +6,7 @@ The SWT lib is loaded depending on OS arch.
 
 ## TODO
 - Implement weather prediction from air pressure data.
+- Implement battery monitor icon.
 
 ## More TODOs
 - See the TODOs file found in /src/pm/swt/homeAutomation folder.
