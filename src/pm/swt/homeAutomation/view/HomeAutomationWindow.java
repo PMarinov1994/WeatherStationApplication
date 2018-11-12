@@ -16,11 +16,13 @@ import org.eclipse.swt.widgets.Shell;
 
 import pm.swt.homeAutomation.model.StatusBar;
 import pm.swt.homeAutomation.model.TempHumSensor;
+import pm.swt.homeAutomation.model.TempPressureSensor;
 import pm.swt.homeAutomation.utils.DependencyIndector;
 import pm.swt.homeAutomation.utils.GlobalResources;
 import pm.swt.homeAutomation.utils.StationLocation;
 import pm.swt.homeAutomation.viewModel.StatusBarViewModel;
 import pm.swt.homeAutomation.viewModel.TempHumSensorViewModel;
+import pm.swt.homeAutomation.viewModel.TempPressureSensorViewModel;
 
 
 public class HomeAutomationWindow
@@ -69,8 +71,8 @@ public class HomeAutomationWindow
 
     public void show()
     {
-        shell.setMaximized(true);
-        shell.setFullScreen(true);
+//        shell.setMaximized(true);
+//        shell.setFullScreen(true);
         shell.open();
 
         this.onResize();
@@ -95,7 +97,7 @@ public class HomeAutomationWindow
 
     private void createContent(Composite parent)
     {
-        final int GRID_COLS = 2;
+        final int GRID_COLS = 3;
 
         Composite mainComp = new Composite(parent, SWT.NONE);
 
@@ -113,19 +115,30 @@ public class HomeAutomationWindow
         statusBarGridData.horizontalSpan = GRID_COLS;
         statusBarView.setLayoutData(statusBarGridData);
 
+
+        // BedRoom
         TempHumSensor bedRoomModel = (TempHumSensor) di.resolveInstance(GlobalResources.BED_ROOM_INSTANCE_MODEL_NAME);
         TempHumSensorView bedRoomView = new TempHumSensorView(
                 mainComp,
                 new TempHumSensorViewModel(bedRoomModel, StationLocation.BED_ROOM));
-        
+
         bedRoomView.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
+        // LivingRoom
         TempHumSensor livingRoomModel = (TempHumSensor) di.resolveInstance(GlobalResources.LIVING_ROOM_INSTANCE_MODEL_NAME);
         TempHumSensorView livingRoomView = new TempHumSensorView(
                 mainComp,
                 new TempHumSensorViewModel(livingRoomModel, StationLocation.LIVING_ROOM));
 
         livingRoomView.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+        // OutSide
+        TempPressureSensor outsideModel = (TempPressureSensor) di.resolveInstance(GlobalResources.OUTSIDE_INSTANCE_MODEL_NAME);
+        TempPressureSensorView outsideView = new TempPressureSensorView(
+                mainComp,
+                new TempPressureSensorViewModel(outsideModel, StationLocation.OUTSIDE));
+
+        outsideView.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
     }
 
 

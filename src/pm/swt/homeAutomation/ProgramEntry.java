@@ -2,6 +2,7 @@ package pm.swt.homeAutomation;
 
 import pm.swt.homeAutomation.model.StatusBar;
 import pm.swt.homeAutomation.model.TempHumSensor;
+import pm.swt.homeAutomation.model.TempPressureSensor;
 import pm.swt.homeAutomation.mqtt.MqttWorker;
 import pm.swt.homeAutomation.utils.DependencyIndector;
 import pm.swt.homeAutomation.utils.GlobalResources;
@@ -21,11 +22,13 @@ public class ProgramEntry
 
         TempHumSensor livingRoomSensorModel = new TempHumSensor();
         TempHumSensor bedRoomSensorModel = new TempHumSensor();
+        TempPressureSensor outsideSensorModel = new TempPressureSensor();
         StatusBar statusBarModel = new StatusBar();
 
         di.registerInstance(GlobalResources.LIVING_ROOM_INSTANCE_MODEL_NAME, livingRoomSensorModel);
         di.registerInstance(GlobalResources.BED_ROOM_INSTANCE_MODEL_NAME, bedRoomSensorModel);
         di.registerInstance(GlobalResources.STATUS_BAR_INSTANCE_MODEL_NAME, statusBarModel);
+        di.registerInstance(GlobalResources.OUTSIDE_INSTANCE_MODEL_NAME, outsideSensorModel);
 
 //         MqttWorker worker = new MqttWorker();
 //         worker.doWork();
