@@ -92,7 +92,7 @@ public class StationStatusTracker
             // Wait for the checkInTime to be initialized.
             while (tracking)
             {
-                if (checkInTime > 0)
+                if (checkInTime >= 0)
                     break;
 
                 try

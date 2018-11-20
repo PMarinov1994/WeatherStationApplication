@@ -123,8 +123,10 @@ public abstract class WeatherStationViewModel extends BaseModel
             break;
         case BaseWeatherStationModel.STATUS_PROP_NAME:
             this.setStationStatus((StationStatus) evt.getNewValue());
+            break;
         case BaseWeatherStationModel.BATTERY_LEVEL_PROP_NAME:
             this.setBatteryLevel((BatteryLevel) evt.getNewValue());
+            break;
         default:
             break;
         }

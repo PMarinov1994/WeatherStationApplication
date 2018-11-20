@@ -30,13 +30,13 @@ public class ProgramEntry
         di.registerInstance(GlobalResources.STATUS_BAR_INSTANCE_MODEL_NAME, statusBarModel);
         di.registerInstance(GlobalResources.OUTSIDE_INSTANCE_MODEL_NAME, outsideSensorModel);
 
-//         MqttWorker worker = new MqttWorker();
-//         worker.doWork();
+         MqttWorker worker = new MqttWorker();
+         worker.doWork();
 
         HomeAutomationWindow mainView = new HomeAutomationWindow();
         mainView.show();
 
-//        worker.dispose();
+        worker.dispose();
     }
 
 }

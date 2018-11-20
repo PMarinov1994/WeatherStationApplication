@@ -48,6 +48,7 @@ public class TempPressureSensorViewModel extends WeatherStationViewModel
         {
         case TempPressureSensor.PRESSURE_PROP_NAME:
             this.setPressure(this.formatPressure((double) evt.getNewValue()));
+            break;
         default:
             break;
         }
