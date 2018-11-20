@@ -8,7 +8,7 @@ import pm.swt.homeAutomation.utils.StationLocation;
 
 public class TempPressureSensorViewModel extends WeatherStationViewModel
 {
-    private static final String PRESSURE_STRING_FORMAT = "%d";
+    private static final String PRESSURE_STRING_FORMAT = "%.2f\nhPa";
 
     public static final String PRESSURE_PROP_NAME = "pressure";
 
