@@ -34,7 +34,7 @@ import pm.swt.homeAutomation.viewModel.WeatherStationViewModel;
 public abstract class WeatherStationView extends BaseView
 {
     private static final double DEFAULT_DPI = 96.0;
-    private static final int HEIGHT_RATIO = 6;
+    private static final int HEIGHT_RATIO = 5;
 
     private static final String BEDROOM_LOCATION_IMG_PATH = "icons/bedroom.png";
     private static final String LIVINGROOM_LOCATION_IMG_PATH = "icons/livingroom.png";
@@ -140,12 +140,13 @@ public abstract class WeatherStationView extends BaseView
         gridLayout.marginWidth = 0;
         gridLayout.marginHeight = 0;
         gridLayout.verticalSpacing = 0;
-
+        gridLayout.horizontalSpacing = 0;
+        gridLayout.marginRight = 0;
+        gridLayout.marginLeft = 0;
 
         parent.setLayout(gridLayout);
 
         Composite imgComp = new Composite(parent, SWT.NONE);
-        imgComp.setBackground(this.getDisplay().getSystemColor(SWT.COLOR_BLUE));
         imgComp.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
         imgComp.setLayout(new FillLayout(SWT.HORIZONTAL));
 
@@ -356,12 +357,14 @@ public abstract class WeatherStationView extends BaseView
         }
 
         Rectangle labelSize = label.getBounds();
+        if (labelSize.width == 0 || labelSize.height == 0)
+            return;
+
         Image oldImg = label.getImage();
         Image newImg = new Image(WeatherStationView.this.getDisplay(),
                 image.getImageData().scaledTo(labelSize.width, labelSize.height));
 
         label.setImage(newImg);
-
 
         if (oldImg != null)
             oldImg.dispose();

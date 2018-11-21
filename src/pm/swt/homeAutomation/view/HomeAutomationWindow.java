@@ -98,7 +98,7 @@ public class HomeAutomationWindow
     private void createContent(Composite parent)
     {
         final int GRID_COLS = 3;
-
+        
         Composite mainComp = new Composite(parent, SWT.NONE);
 
         GridLayout gridLayout = new GridLayout(GRID_COLS, true);
@@ -106,6 +106,9 @@ public class HomeAutomationWindow
         gridLayout.marginHeight = 0;
         gridLayout.verticalSpacing = 0;
         gridLayout.horizontalSpacing = 0;
+        gridLayout.marginRight = 0;
+        gridLayout.marginLeft = 0;
+        
         mainComp.setLayout(gridLayout);
 
         StatusBar statusBarModel = (StatusBar) di.resolveInstance(GlobalResources.STATUS_BAR_INSTANCE_MODEL_NAME);

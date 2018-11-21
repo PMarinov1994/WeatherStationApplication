@@ -2,6 +2,8 @@ package pm.swt.homeAutomation.mqtt;
 
 import java.io.File;
 import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.UUID;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -44,6 +46,8 @@ public class MqttWorker
         try
         {
             jarExePath = this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+            Path path = Paths.get(jarExePath);
+            jarExePath = path.getParent().toString();
         }
         catch (URISyntaxException e)
         {
@@ -51,10 +55,15 @@ public class MqttWorker
         }
 
         this.mqttQosFolder = String.format("%s%s%s", jarExePath, File.separator, MQTT_QOS_SUB_FOLDER);
+        System.out.println("MqttQosFolder: " + mqttQosFolder);
 
         File dirQos = new File(this.mqttQosFolder);
         if (!dirQos.exists())
-            dirQos.mkdirs();
+        {
+            System.out.println("Creating folder for mqttQos...");
+            boolean result = dirQos.mkdirs();
+            System.out.println("Result: " + result);
+        }
     }
 
 
