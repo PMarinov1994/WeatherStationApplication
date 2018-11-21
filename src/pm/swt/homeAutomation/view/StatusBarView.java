@@ -16,7 +16,7 @@ import pm.swt.homeAutomation.viewModel.StatusBarViewModel;
 
 public class StatusBarView extends BaseView
 {
-    private final int HEIGHT_RATIO = 7;
+    private final int HEIGHT_RATIO = 8;
 
     private CLabel timeLabel;
     private StatusBarViewModel viewModel;

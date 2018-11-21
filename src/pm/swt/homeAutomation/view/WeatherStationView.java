@@ -34,7 +34,7 @@ import pm.swt.homeAutomation.viewModel.WeatherStationViewModel;
 public abstract class WeatherStationView extends BaseView
 {
     private static final double DEFAULT_DPI = 96.0;
-    private static final int HEIGHT_RATIO = 5;
+    private static final int HEIGHT_RATIO = 4;
 
     private static final String BEDROOM_LOCATION_IMG_PATH = "icons/bedroom.png";
     private static final String LIVINGROOM_LOCATION_IMG_PATH = "icons/livingroom.png";
