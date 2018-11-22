@@ -22,10 +22,10 @@ public abstract class WeatherStationViewModel extends BaseModel
 
     public static final String TEMP_CEL_SIM = "\u2103";
 
-    private String temperature = "";
+    private String temperature;
     private StationLocation homeSector;
-    private StationStatus stationStatus = StationStatus.STANDBY_STATUS;
-    private BatteryLevel batteryLevel = BatteryLevel.UNKNOWN;
+    private StationStatus stationStatus;
+    private BatteryLevel batteryLevel;
 
     private StationStatusTracker ssTracker;
 
@@ -47,6 +47,9 @@ public abstract class WeatherStationViewModel extends BaseModel
     public WeatherStationViewModel(BaseWeatherStationModel model, StationLocation homeSector)
     {
         this.model = model;
+        this.setBatteryLevel(this.model.getBatteryLevel());
+        this.setStationStatus(this.model.getStatus());
+
         this.homeSector = homeSector;
         this.model.addPropertyChangeListener(this.listener);
 

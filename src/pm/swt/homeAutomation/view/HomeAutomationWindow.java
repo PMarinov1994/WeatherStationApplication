@@ -59,6 +59,7 @@ public class HomeAutomationWindow
     {
         this.display = new Display();
         this.shell = new Shell(this.display);
+
         this.shell.setLayout(new FillLayout());
 
         this.createContent(this.shell);
@@ -97,18 +98,19 @@ public class HomeAutomationWindow
 
     private void createContent(Composite parent)
     {
-        final int GRID_COLS = 3;
-        
+        final int GRID_COLS = 16;
+
         Composite mainComp = new Composite(parent, SWT.NONE);
 
-        GridLayout gridLayout = new GridLayout(GRID_COLS, true);
+        // If columns are to be made equal, set mainComp background to black.
+        // or a while strip will be shown on the right since the columns do not fill
+        // the space equally
+        GridLayout gridLayout = new GridLayout(GRID_COLS, false);
         gridLayout.marginWidth = 0;
         gridLayout.marginHeight = 0;
         gridLayout.verticalSpacing = 0;
         gridLayout.horizontalSpacing = 0;
-        gridLayout.marginRight = 0;
-        gridLayout.marginLeft = 0;
-        
+
         mainComp.setLayout(gridLayout);
 
         StatusBar statusBarModel = (StatusBar) di.resolveInstance(GlobalResources.STATUS_BAR_INSTANCE_MODEL_NAME);

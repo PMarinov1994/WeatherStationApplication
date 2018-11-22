@@ -16,7 +16,7 @@ import pm.swt.homeAutomation.viewModel.WeatherStationViewModel;
  * @author pmarinov
  *
  */
-public class TempHumSensorView extends WeatherStationView
+public class TempHumSensorView extends BaseTempSensorView
 {
     private CLabel humLabel;
 

@@ -9,7 +9,7 @@ public class BaseWeatherStationModel extends BaseModel implements ITrackableStat
     public static final String BATTERY_LEVEL_PROP_NAME = "batteryLevel";
 
     private double tempreture = 0;
-    private BatteryLevel batteryLevel = BatteryLevel.UNKNOWN;
+    private BatteryLevel batteryLevel = BatteryLevel.MEDIUM;
 
     private StationStatus status = StationStatus.STANDBY_STATUS;
     private int refreshInterval = -1;

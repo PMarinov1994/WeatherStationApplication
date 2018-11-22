@@ -11,7 +11,7 @@ import pm.swt.homeAutomation.viewModel.TempPressureSensorViewModel;
 import pm.swt.homeAutomation.viewModel.WeatherStationViewModel;
 
 
-public class TempPressureSensorView extends WeatherStationView
+public class TempPressureSensorView extends BaseTempSensorView
 {
     private CLabel pressureLabel;
 

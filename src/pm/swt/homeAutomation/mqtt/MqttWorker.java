@@ -2,7 +2,6 @@ package pm.swt.homeAutomation.mqtt;
 
 import java.io.File;
 import java.net.URISyntaxException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
 
@@ -43,11 +42,12 @@ public class MqttWorker
     public MqttWorker()
     {
         String jarExePath = "";
+
         try
         {
-            jarExePath = this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
-            Path path = Paths.get(jarExePath);
-            jarExePath = path.getParent().toString();
+            File jarFile = new File(MqttWorker.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+            jarExePath = jarFile.getAbsolutePath();
+            jarExePath = Paths.get(jarExePath).getParent().toAbsolutePath().toString();
         }
         catch (URISyntaxException e)
         {

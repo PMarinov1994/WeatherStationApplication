@@ -22,7 +22,7 @@ public abstract class BaseView extends Composite
     public BaseView(Composite parent, int style)
     {
         super(parent, style);
-
+        
         this.addDisposeListener(new DisposeListener()
         {
 

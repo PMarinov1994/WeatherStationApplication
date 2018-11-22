@@ -31,7 +31,7 @@ import pm.swt.homeAutomation.utils.StationStatus;
 import pm.swt.homeAutomation.viewModel.WeatherStationViewModel;
 
 
-public abstract class WeatherStationView extends BaseView
+public abstract class BaseTempSensorView extends BaseView
 {
     private static final double DEFAULT_DPI = 96.0;
     private static final int HEIGHT_RATIO = 4;
@@ -43,9 +43,9 @@ public abstract class WeatherStationView extends BaseView
     private static final String STANDBY_STATUS_IMG_PATH = "icons/standByStatus.png";
     private static final String ERROR_STATUS_IMG_PATH = "icons/errorStatus.png";
 
-    private static final String BATTERY_LOW_IMG_PATH = "icons/battery_low.png";
-    private static final String BATTERY_MEDIUM_IMG_PATH = "icons/battery_medium.png";
-    private static final String BATTERY_FULL_IMG_PATH = "icons/battery_full.png";
+    private static final String BATTERY_LOW_IMG_PATH = "icons/battery_low_croped.png";
+    private static final String BATTERY_MEDIUM_IMG_PATH = "icons/battery_medium_croped.png";
+    private static final String BATTERY_FULL_IMG_PATH = "icons/battery_full_croped.png";
 
     private static final String UNKNOWN_IMG_PATH = "icons/info.png";
 
@@ -76,13 +76,13 @@ public abstract class WeatherStationView extends BaseView
         @Override
         public void propertyChange(PropertyChangeEvent evt)
         {
-            WeatherStationView.this.onPropertyChanged(evt);
+            BaseTempSensorView.this.onPropertyChanged(evt);
         }
     };
 
 
 
-    public WeatherStationView(Composite parent, WeatherStationViewModel viewModel)
+    public BaseTempSensorView(Composite parent, WeatherStationViewModel viewModel)
     {
         super(parent, SWT.NONE);
 
@@ -141,8 +141,6 @@ public abstract class WeatherStationView extends BaseView
         gridLayout.marginHeight = 0;
         gridLayout.verticalSpacing = 0;
         gridLayout.horizontalSpacing = 0;
-        gridLayout.marginRight = 0;
-        gridLayout.marginLeft = 0;
 
         parent.setLayout(gridLayout);
 
@@ -158,7 +156,7 @@ public abstract class WeatherStationView extends BaseView
             @Override
             public void handleEvent(Event event)
             {
-                WeatherStationView.this.changeLabelImage(locationLabel, WeatherStationView.this.locationImage);
+                BaseTempSensorView.this.changeLabelImage(locationLabel, BaseTempSensorView.this.locationImage);
             }
         });
         locationLabel.addDisposeListener(new DisposeListener()
@@ -181,9 +179,9 @@ public abstract class WeatherStationView extends BaseView
             @Override
             public void handleEvent(Event event)
             {
-                WeatherStationView.this.changeLabelImage(
-                        WeatherStationView.this.statusLabel,
-                        WeatherStationView.this.getStatusImage(WeatherStationView.this.viewModel.getStationStatus()));
+                BaseTempSensorView.this.changeLabelImage(
+                        BaseTempSensorView.this.statusLabel,
+                        BaseTempSensorView.this.getStatusImage(BaseTempSensorView.this.viewModel.getStationStatus()));
             }
         });
         this.statusLabel.addDisposeListener(new DisposeListener()
@@ -191,7 +189,7 @@ public abstract class WeatherStationView extends BaseView
             @Override
             public void widgetDisposed(DisposeEvent e)
             {
-                Image image = WeatherStationView.this.statusLabel.getImage();
+                Image image = BaseTempSensorView.this.statusLabel.getImage();
 
                 if (image != null && !image.isDisposed())
                     image.dispose();
@@ -206,9 +204,9 @@ public abstract class WeatherStationView extends BaseView
             @Override
             public void handleEvent(Event event)
             {
-                WeatherStationView.this.changeLabelImage(
-                        WeatherStationView.this.batteryLabel,
-                        WeatherStationView.this.getBatteryImage(WeatherStationView.this.viewModel.getBatteryLevel()));
+                BaseTempSensorView.this.changeLabelImage(
+                        BaseTempSensorView.this.batteryLabel,
+                        BaseTempSensorView.this.getBatteryImage(BaseTempSensorView.this.viewModel.getBatteryLevel()));
             }
         });
         this.batteryLabel.addDisposeListener(new DisposeListener()
@@ -217,7 +215,7 @@ public abstract class WeatherStationView extends BaseView
             @Override
             public void widgetDisposed(DisposeEvent e)
             {
-                Image image = WeatherStationView.this.batteryLabel.getImage();
+                Image image = BaseTempSensorView.this.batteryLabel.getImage();
 
                 if (image != null && !image.isDisposed())
                     image.dispose();
@@ -272,12 +270,12 @@ public abstract class WeatherStationView extends BaseView
             onCtrlTextChange(tempLabel);
             break;
         case WeatherStationViewModel.STATION_STATUS_PROP_NAME:
-            imageToSet = WeatherStationView.this.getStatusImage((StationStatus) evt.getNewValue());
-            WeatherStationView.this.changeLabelImage(statusLabel, imageToSet);
+            imageToSet = BaseTempSensorView.this.getStatusImage((StationStatus) evt.getNewValue());
+            BaseTempSensorView.this.changeLabelImage(statusLabel, imageToSet);
             break;
         case WeatherStationViewModel.BATTERY_LEVEL_PROP_NAME:
-            imageToSet = WeatherStationView.this.getBatteryImage((BatteryLevel) evt.getNewValue());
-            WeatherStationView.this.changeLabelImage(batteryLabel, imageToSet);
+            imageToSet = BaseTempSensorView.this.getBatteryImage((BatteryLevel) evt.getNewValue());
+            BaseTempSensorView.this.changeLabelImage(batteryLabel, imageToSet);
             break;
         default:
             break;
@@ -361,7 +359,7 @@ public abstract class WeatherStationView extends BaseView
             return;
 
         Image oldImg = label.getImage();
-        Image newImg = new Image(WeatherStationView.this.getDisplay(),
+        Image newImg = new Image(BaseTempSensorView.this.getDisplay(),
                 image.getImageData().scaledTo(labelSize.width, labelSize.height));
 
         label.setImage(newImg);
