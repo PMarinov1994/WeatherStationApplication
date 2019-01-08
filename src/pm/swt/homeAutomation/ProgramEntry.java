@@ -1,9 +1,12 @@
 package pm.swt.homeAutomation;
 
+import javax.naming.OperationNotSupportedException;
+
 import pm.swt.homeAutomation.model.StatusBar;
 import pm.swt.homeAutomation.model.TempHumSensor;
 import pm.swt.homeAutomation.model.TempPressureSensor;
 import pm.swt.homeAutomation.mqtt.MqttWorker;
+import pm.swt.homeAutomation.utils.ConfigurationFileManager;
 import pm.swt.homeAutomation.utils.DependencyIndector;
 import pm.swt.homeAutomation.utils.GlobalResources;
 import pm.swt.homeAutomation.utils.SwtClassLoader;
@@ -30,13 +33,26 @@ public class ProgramEntry
         di.registerInstance(GlobalResources.STATUS_BAR_INSTANCE_MODEL_NAME, statusBarModel);
         di.registerInstance(GlobalResources.OUTSIDE_INSTANCE_MODEL_NAME, outsideSensorModel);
 
-        MqttWorker worker = new MqttWorker();
-        worker.doWork();
+//        MqttWorker mqttWorker = new MqttWorker();
+//        mqttWorker.doWork();        
+
+        ConfigurationFileManager configManager = null;
+        try
+        {
+            configManager = new ConfigurationFileManager();
+            di.registerInstance(GlobalResources.CONFIGURATION_FILE_MANAGER_NAME, configManager);
+        }
+        catch (OperationNotSupportedException e)
+        {
+            e.printStackTrace();
+            return;
+        }
 
         HomeAutomationWindow mainView = new HomeAutomationWindow();
         mainView.show();
 
-        worker.dispose();
+        configManager.dispose();
+//        mqttWorker.dispose();
     }
 
 }

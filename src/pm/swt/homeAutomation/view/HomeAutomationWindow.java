@@ -72,8 +72,8 @@ public class HomeAutomationWindow
 
     public void show()
     {
-        shell.setMaximized(true);
-        shell.setFullScreen(true);
+//        shell.setMaximized(true);
+//        shell.setFullScreen(true);
         shell.open();
 
         this.onResize();
