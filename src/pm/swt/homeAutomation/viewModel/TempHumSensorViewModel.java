@@ -44,7 +44,7 @@ public class TempHumSensorViewModel extends WeatherStationViewModel
 
     public void formatHum(double hum)
     {
-        this.setHumidity(String.format("%02.2f%%", hum));
+        this.setHumidity(String.format("%02.1f%%", hum));
     }
 
 

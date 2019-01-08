@@ -112,7 +112,7 @@ public abstract class WeatherStationViewModel extends BaseModel
 
     protected void formatTemp(double temp)
     {
-        this.setTemperature(String.format("%02.2f\u2103", temp));
+        this.setTemperature(String.format("%02.1f\u2103", temp));
     }
 
 
