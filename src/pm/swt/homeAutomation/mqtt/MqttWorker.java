@@ -1,6 +1,7 @@
 package pm.swt.homeAutomation.mqtt;
 
 import java.io.File;
+import java.util.Date;
 import java.util.UUID;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -10,7 +11,10 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MqttDefaultFilePersistence;
 
+import pm.swt.homeAutomation.configurator.ConfigurationFileManager;
+import pm.swt.homeAutomation.configurator.IConfigurationChanged;
 import pm.swt.homeAutomation.model.BatteryLevel;
+import pm.swt.homeAutomation.model.ConfigurationModel;
 import pm.swt.homeAutomation.model.TempHumSensor;
 import pm.swt.homeAutomation.model.TempPressureSensor;
 import pm.swt.homeAutomation.utils.DependencyIndector;
@@ -25,16 +29,22 @@ public class MqttWorker
     private static final String LIVING_ROOM_TOPIC = "livingRoom";
     private static final String OUTSIDE_TOPIC = "outside";
 
-    private static final String MQTT_SERVER_ADDRESS = "tcp://192.168.200.105:1883";
     private static final String[] MQTT_TOPICS = { "bedroom/#", "livingRoom/#", "outside/#" };
-
     private static final String MQTT_QOS_SUB_FOLDER = "mqttQOS";
+
+    private final String MQTT_SERVER_ADDRESS;
 
     private MqttClient client;
     private MqttWorkerCallback callBack;
 
     private final String mqttQosFolder;
 
+    private volatile boolean isRunning = false;
+
+    private volatile double fullBatteryV;
+    private volatile double mediumBatteryV;
+    private volatile int mqttReconnectDelaySeconds;
+    private volatile boolean recalculateReconnectDelay = false;
 
 
     public MqttWorker()
@@ -51,12 +61,38 @@ public class MqttWorker
             boolean result = dirQos.mkdirs();
             System.out.println("Result: " + result);
         }
+
+        ConfigurationFileManager configManager = (ConfigurationFileManager) DependencyIndector.getInstance()
+                .resolveInstance(GlobalResources.CONFIGURATION_FILE_MANAGER_NAME);
+        ConfigurationModel config = configManager.getConfig();
+
+        this.MQTT_SERVER_ADDRESS = String.format("tcp://%s:%s", config.getMqttAddress(), config.getMqttPort());
+
+        this.fullBatteryV = config.getFullBatteryLevel();
+        this.mediumBatteryV = config.getMediumBatteryLevel();
+        this.mqttReconnectDelaySeconds = config.getMqttReconnectIntervalSeconds();
+
+        configManager.addConfigurationChangeSubscriber(new IConfigurationChanged()
+        {
+
+            @Override
+            public void configurationChanged(ConfigurationModel newConfig)
+            {
+                fullBatteryV = newConfig.getFullBatteryLevel();
+                mediumBatteryV = newConfig.getMediumBatteryLevel();
+                mqttReconnectDelaySeconds = newConfig.getMqttReconnectIntervalSeconds();
+                recalculateReconnectDelay = true;
+
+            }
+        });
     }
 
 
 
-    public void doWork()
+    public boolean connectToBrocker()
     {
+        this.isRunning = true;
+
         try
         {
             this.client = new MqttClient(
@@ -75,14 +111,28 @@ public class MqttWorker
         }
         catch (MqttException e)
         {
-            e.printStackTrace();
+            System.err.println("Connection to Brocker failed.");
+            try
+            {
+                this.client.close(true);
+            }
+            catch (MqttException e1)
+            {
+                System.err.println("Closing blocker failed.");
+            }
+
+            return false;
         }
+
+        return true;
     }
 
 
 
     public void dispose()
     {
+        this.isRunning = false;
+
         try
         {
             System.out.println("Disconnectiong client...");
@@ -93,7 +143,7 @@ public class MqttWorker
         }
         catch (MqttException e)
         {
-            e.printStackTrace();
+            System.err.println("Closing MQTT Blocker failed.");
         }
     }
 
@@ -102,6 +152,38 @@ public class MqttWorker
     public String getMqttQosFolder()
     {
         return mqttQosFolder;
+    }
+
+
+
+    public void reconnectToBrocker()
+    {
+        System.out.println("Reconnecting to brocker...");
+
+        Thread thread = new Thread(new Runnable()
+        {
+
+            @Override
+            public void run()
+            {
+                Date nextCheck = new Date();
+
+                while (isRunning)
+                {
+                    if (!recalculateReconnectDelay && nextCheck.getTime() - new Date().getTime() > 0)
+                        continue;
+
+                    if (connectToBrocker())
+                        break;
+                    
+                    nextCheck = new Date(new Date().getTime() + mqttReconnectDelaySeconds * 1000);
+                    recalculateReconnectDelay = false;
+                    Thread.yield();
+                }
+            }
+        });
+
+        thread.start();
     }
 
 
@@ -135,6 +217,17 @@ public class MqttWorker
         {
             System.err.println("MQTT Connection Lost. Reason:");
             System.err.println(cause.getMessage());
+
+            try
+            {
+                client.close();
+            }
+            catch (MqttException e)
+            {
+                System.err.println("Closing brocker failed.");
+            }
+
+            reconnectToBrocker();
         }
 
 
@@ -256,10 +349,10 @@ public class MqttWorker
 
         private BatteryLevel parseBatteryLevel(double voltage)
         {
-            if (voltage > 3.5)
+            if (voltage > fullBatteryV)
                 return BatteryLevel.FULL;
 
-            if (voltage > 3.3)
+            if (voltage > mediumBatteryV)
                 return BatteryLevel.MEDIUM;
 
             return BatteryLevel.LOW;

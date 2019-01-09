@@ -2,11 +2,11 @@ package pm.swt.homeAutomation;
 
 import javax.naming.OperationNotSupportedException;
 
+import pm.swt.homeAutomation.configurator.ConfigurationFileManager;
 import pm.swt.homeAutomation.model.StatusBar;
 import pm.swt.homeAutomation.model.TempHumSensor;
 import pm.swt.homeAutomation.model.TempPressureSensor;
 import pm.swt.homeAutomation.mqtt.MqttWorker;
-import pm.swt.homeAutomation.utils.ConfigurationFileManager;
 import pm.swt.homeAutomation.utils.DependencyIndector;
 import pm.swt.homeAutomation.utils.GlobalResources;
 import pm.swt.homeAutomation.utils.SwtClassLoader;
@@ -33,9 +33,6 @@ public class ProgramEntry
         di.registerInstance(GlobalResources.STATUS_BAR_INSTANCE_MODEL_NAME, statusBarModel);
         di.registerInstance(GlobalResources.OUTSIDE_INSTANCE_MODEL_NAME, outsideSensorModel);
 
-//        MqttWorker mqttWorker = new MqttWorker();
-//        mqttWorker.doWork();        
-
         ConfigurationFileManager configManager = null;
         try
         {
@@ -48,11 +45,15 @@ public class ProgramEntry
             return;
         }
 
+        MqttWorker mqttWorker = new MqttWorker();
+        if (!mqttWorker.connectToBrocker())
+            mqttWorker.reconnectToBrocker();
+
         HomeAutomationWindow mainView = new HomeAutomationWindow();
         mainView.show();
 
         configManager.dispose();
-//        mqttWorker.dispose();
+        mqttWorker.dispose();
     }
 
 }

@@ -6,11 +6,18 @@ public class ConfigurationModel extends BaseModel
     public static final String LOW_BATTERY_LEVEL = "lowBatteryLevel";
     public static final String MEDIUM_BATTERY_LEVEL = "mediumBatteryLevel";
     public static final String FULL_BATTERY_LEVEL = "fullBatteryLevel";
+    public static final String MQTT_PORT = "mqttPort";
+    public static final String MQTT_ADDRESS = "mqttAddress";
+    public static final String MQTT_RECONNECT_INTERVAL_SECONDS = "mqttReconnectIntervalSeconds";
 
     private double fullBatteryLevel;
     private double mediumBatteryLevel;
     private double lowBatteryLevel;
+    
+    private String mqttAddress;
+    private String mqttPort;
 
+    private int mqttReconnectIntervalSeconds;
 
     /**
      * The amount of failed station check-ins before an error flag is raised.
@@ -71,5 +78,47 @@ public class ConfigurationModel extends BaseModel
     public void setMissedReportsCount(int missedReportsCount)
     {
         this.firePropertyChange(MISSED_REPORTS_COUNT, this.missedReportsCount, this.missedReportsCount = missedReportsCount);
+    }
+
+
+
+    public String getMqttAddress()
+    {
+        return mqttAddress;
+    }
+
+
+
+    public void setMqttAddress(String mqttAddress)
+    {
+        this.firePropertyChange(MQTT_ADDRESS, this.mqttAddress, this.mqttAddress = mqttAddress);
+    }
+
+
+
+    public String getMqttPort()
+    {
+        return mqttPort;
+    }
+
+
+
+    public void setMqttPort(String mqttPort)
+    {
+        this.firePropertyChange(MQTT_PORT, this.mqttPort, this.mqttPort = mqttPort);
+    }
+
+
+
+    public int getMqttReconnectIntervalSeconds()
+    {
+        return mqttReconnectIntervalSeconds;
+    }
+
+
+
+    public void setMqttReconnectIntervalSeconds(int mqttReconnectIntervalSeconds)
+    {
+        this.firePropertyChange(MQTT_RECONNECT_INTERVAL_SECONDS, this.mqttReconnectIntervalSeconds, this.mqttReconnectIntervalSeconds = mqttReconnectIntervalSeconds);
     }
 }
