@@ -17,8 +17,8 @@ public class ConfigurationFileManager
 {
     private static final int MISSED_REPORTS_COUNT_DEFAULT = 3;
     private static final double LOW_BATTERY_LEVEL_DEFAULT = 3.3;
-    private static final double MEDIUM_BATTERY_LEVEL_DEFAULT = 3.3;
-    private static final double FULL_BATTERY_LEVEL_DEFAULT = 3.5;
+    private static final double MEDIUM_BATTERY_LEVEL_DEFAULT = 3.7;
+    private static final double FULL_BATTERY_LEVEL_DEFAULT = 4;
     private static final String MQTT_PORT_DEFAULT = "1883";
     private static final String MQTT_ADDRESS_DEFAULT = "localhost";
     private static final int MQTT_RECONNECT_INTERVAL_SECONDS_DEFAULT = 2;
