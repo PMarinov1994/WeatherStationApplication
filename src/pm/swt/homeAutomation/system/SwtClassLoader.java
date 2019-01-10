@@ -1,4 +1,4 @@
-package pm.swt.homeAutomation.utils;
+package pm.swt.homeAutomation.system;
 
 
 import java.io.File;
@@ -103,40 +103,39 @@ public class SwtClassLoader
 
     private String getOSName()
     {
-        String osNameProperty = System.getProperty("os.name");
+        SystemType systemType = SystemInfo.getSystemType();
 
-        if (osNameProperty == null)
-            throw new RuntimeException("os.name property is not set");
-        else
-            osNameProperty = osNameProperty.toLowerCase();
-
-        if (osNameProperty.contains("win"))
-            return "win";
-        else if (osNameProperty.contains("mac"))
-            return "osx";
-        else if (osNameProperty.contains("linux") || osNameProperty.contains("nix"))
+        switch (systemType)
+        {
+        case LINUX:
             return "linux";
-        else
-            throw new RuntimeException("Unknown OS name: " + osNameProperty);
+        case MAC_OS:
+            return "osx";
+        case WINDOWS:
+            return "win";
+        default:
+            return null;
+        }
     }
 
 
 
     private String getArchName()
     {
-        String osArch = System.getProperty("os.arch");
+        SystemArch systemArch = SystemInfo.getSystemArch();
 
-        if (osArch == null)
+        switch (systemArch)
+        {
+        case ARM:
+            return "arm";
+        case x86:
+            return "x86";
+        case x86_64:
+            return "x64";
+        default:
             return null;
 
-        if (osArch.contains("64"))
-            return "x64";
-        else if (osArch.contains("32"))
-            return "x86";
-        else if (osArch.contains("arm"))
-            return "arm";
-
-        return null;
+        }
     }
 
 

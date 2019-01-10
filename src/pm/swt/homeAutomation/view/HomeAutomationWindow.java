@@ -17,6 +17,9 @@ import org.eclipse.swt.widgets.Shell;
 import pm.swt.homeAutomation.model.StatusBar;
 import pm.swt.homeAutomation.model.TempHumSensor;
 import pm.swt.homeAutomation.model.TempPressureSensor;
+import pm.swt.homeAutomation.system.SystemArch;
+import pm.swt.homeAutomation.system.SystemInfo;
+import pm.swt.homeAutomation.system.SystemType;
 import pm.swt.homeAutomation.utils.DependencyIndector;
 import pm.swt.homeAutomation.utils.GlobalResources;
 import pm.swt.homeAutomation.utils.StationLocation;
@@ -72,8 +75,13 @@ public class HomeAutomationWindow
 
     public void show()
     {
-        shell.setMaximized(true);
-        shell.setFullScreen(true);
+        if (SystemInfo.getSystemType() == SystemType.LINUX &&
+                SystemInfo.getSystemArch() == SystemArch.ARM)
+        {
+            shell.setMaximized(true);
+            shell.setFullScreen(true);
+        }
+
         shell.open();
 
         this.onResize();
