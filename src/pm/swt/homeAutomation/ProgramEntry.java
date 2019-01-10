@@ -45,13 +45,18 @@ public class ProgramEntry
             return;
         }
 
+        HomeAutomationWindow mainView = new HomeAutomationWindow();        
+
+        // After we create the UI start the MQTT, so that we receive
+        // all the data. The PropertyChanged listener will not send the same
+        // data twice, so we can miss some initial values.
         MqttWorker mqttWorker = new MqttWorker();
         if (!mqttWorker.connectToBrocker())
             mqttWorker.reconnectToBrocker();
 
-        HomeAutomationWindow mainView = new HomeAutomationWindow();
+        // Show the UI so that main thread will loop until exit.
         mainView.show();
-
+        
         configManager.dispose();
         mqttWorker.dispose();
     }

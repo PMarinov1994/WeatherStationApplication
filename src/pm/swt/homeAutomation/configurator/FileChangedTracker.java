@@ -121,7 +121,15 @@ public class FileChangedTracker
                 }
 
                 watchKey.reset();
-                Thread.yield();
+                
+                try
+                {
+                    Thread.sleep(20);
+                }
+                catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
             }
         }
     }

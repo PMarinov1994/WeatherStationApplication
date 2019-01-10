@@ -183,7 +183,15 @@ public class MqttWorker
 
                     nextCheck = new Date(new Date().getTime() + mqttReconnectDelaySeconds * 1000);
                     recalculateReconnectDelay = false;
-                    Thread.yield();
+                    
+                    try
+                    {
+                        Thread.sleep(20);
+                    }
+                    catch (InterruptedException e)
+                    {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -242,7 +250,7 @@ public class MqttWorker
         {
             String messageStr = new String(message.getPayload());
 
-            System.out.println(String.format("MQTT message arrived.\nTopic: %s\nMessage: %s",
+            System.out.println(String.format("MQTT message arrived.\nTopic: %s\nMessage: %s\n\n",
                     topic, messageStr));
 
             String messageOrigin = topic.substring(0, topic.indexOf(SECTOR_SEPARATOR));

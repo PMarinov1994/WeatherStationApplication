@@ -120,8 +120,17 @@ public class StationStatusTracker
                 if (checkInTime >= 0)
                     break;
 
-                Thread.yield();
+                try
+                {
+                    Thread.sleep(20);
+                }
+                catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
             }
+
+            System.out.println("Got out of standyloop");
 
             // After we have a checkInTime set we can start tracking
             // the station status.
@@ -157,7 +166,14 @@ public class StationStatusTracker
                 else
                     this.changeStatus(StationStatus.OK_STATUS);
 
-                Thread.yield();
+                try
+                {
+                    Thread.sleep(20);
+                }
+                catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
             }
         }
 
