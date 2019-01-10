@@ -120,14 +120,7 @@ public class StationStatusTracker
                 if (checkInTime >= 0)
                     break;
 
-                try
-                {
-                    Thread.sleep(20);
-                }
-                catch (InterruptedException e)
-                {
-                    return;
-                }
+                Thread.yield();
             }
 
             // After we have a checkInTime set we can start tracking
@@ -164,14 +157,7 @@ public class StationStatusTracker
                 else
                     this.changeStatus(StationStatus.OK_STATUS);
 
-                try
-                {
-                    Thread.sleep(20);
-                }
-                catch (InterruptedException e)
-                {
-                    return;
-                }
+                Thread.yield();
             }
         }
 

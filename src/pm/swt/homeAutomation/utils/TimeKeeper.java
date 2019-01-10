@@ -56,14 +56,7 @@ public class TimeKeeper
             {
                 this.statusBarModel.setDate(new Date());
 
-                try
-                {
-                    Thread.sleep(20);
-                }
-                catch (InterruptedException e)
-                {
-                    return;
-                }
+                Thread.yield();
             }
         }
 

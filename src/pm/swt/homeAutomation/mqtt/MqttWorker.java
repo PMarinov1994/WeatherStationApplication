@@ -47,6 +47,7 @@ public class MqttWorker
     private volatile boolean recalculateReconnectDelay = false;
 
 
+
     public MqttWorker()
     {
         String jarExePath = GlobalResources.getExecJarPath();
@@ -135,10 +136,14 @@ public class MqttWorker
 
         try
         {
-            System.out.println("Disconnectiong client...");
-            this.client.disconnectForcibly();
+            if (this.client.isConnected())
+            {
+                System.out.println("Disconnectiong client...");
+                this.client.disconnectForcibly();
 
-            System.out.println("Closing client...");
+                System.out.println("Closing client...");
+            }
+            
             this.client.close(true);
         }
         catch (MqttException e)
@@ -175,7 +180,7 @@ public class MqttWorker
 
                     if (connectToBrocker())
                         break;
-                    
+
                     nextCheck = new Date(new Date().getTime() + mqttReconnectDelaySeconds * 1000);
                     recalculateReconnectDelay = false;
                     Thread.yield();
