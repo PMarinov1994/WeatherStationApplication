@@ -12,20 +12,34 @@ public abstract class BaseModel implements IBindableBase
 
     public void addPropertyChangeListener(PropertyChangeListener listener)
     {
-        changeSupport.addPropertyChangeListener(listener);
+        this.changeSupport.addPropertyChangeListener(listener);
+    }
+
+
+
+    public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener)
+    {
+        this.changeSupport.addPropertyChangeListener(propertyName, listener);
     }
 
 
 
     public void removePropertyChangeListener(PropertyChangeListener listener)
     {
-        changeSupport.removePropertyChangeListener(listener);
+        this.changeSupport.removePropertyChangeListener(listener);
+    }
+
+
+
+    public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener)
+    {
+        this.changeSupport.removePropertyChangeListener(propertyName, listener);
     }
 
 
 
     protected void firePropertyChange(String propertyName, Object oldValue, Object newValue)
     {
-        changeSupport.firePropertyChange(propertyName, oldValue, newValue);
+        this.changeSupport.firePropertyChange(propertyName, oldValue, newValue);
     }
 }

@@ -19,6 +19,7 @@ public class StatusBarView extends BaseView
     private final int HEIGHT_RATIO = 7;
 
     private CLabel timeLabel;
+    private CLabel messageLabel;
     private StatusBarViewModel viewModel;
 
     private PropertyChangeListener listener = new PropertyChangeListener()
@@ -31,6 +32,9 @@ public class StatusBarView extends BaseView
             {
             case StatusBarViewModel.TIME_PROP_NAME:
                 timeLabel.setText((String) evt.getNewValue());
+                break;
+            case StatusBarViewModel.MESSAGE_PROP_NAME:
+                messageLabel.setText((String) evt.getNewValue());
                 break;
             default:
                 break;
@@ -65,9 +69,16 @@ public class StatusBarView extends BaseView
         timeLabel = new CLabel(parent, SWT.None);
         timeLabel.setBackground(backgroundColor);
         timeLabel.setForeground(foregroundColor);
-
+        
         this.registerResizableControl(timeLabel);
         timeLabel.setText("00:00");
+        
+        messageLabel = new CLabel(parent, SWT.None);
+        messageLabel.setBackground(backgroundColor);
+        messageLabel.setForeground(foregroundColor);
+        
+        this.registerResizableControl(messageLabel);
+        messageLabel.setText(this.viewModel.getMessage());
     }
 
 

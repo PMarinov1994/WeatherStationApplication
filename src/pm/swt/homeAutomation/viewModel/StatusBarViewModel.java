@@ -15,28 +15,33 @@ import pm.swt.homeAutomation.utils.TimeKeeper;
 public class StatusBarViewModel extends BaseModel
 {
     public static final String TIME_PROP_NAME = "time";
+    public static final String MESSAGE_PROP_NAME = "message";
 
     private StatusBar model;
     private TimeKeeper timeKeeper;
 
     private String time;
+    private String message;
 
-    private PropertyChangeListener listener = new PropertyChangeListener()
+    private PropertyChangeListener dateChangeListener = new PropertyChangeListener()
     {
 
         @Override
         public void propertyChange(PropertyChangeEvent evt)
         {
-            switch (evt.getPropertyName())
-            {
-            case StatusBar.DATE_PROP_NAME:
-                Date newTime = (Date) evt.getNewValue();
-                SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
-                setTime(dateFormat.format(newTime));
-                break;
-            default:
-                break;
-            }
+            Date newTime = (Date) evt.getNewValue();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
+            setTime(dateFormat.format(newTime));
+        }
+    };
+
+    private PropertyChangeListener messageChangeListener = new PropertyChangeListener()
+    {
+
+        @Override
+        public void propertyChange(PropertyChangeEvent evt)
+        {
+            setMessage((String) evt.getNewValue());
         }
     };
 
@@ -45,7 +50,8 @@ public class StatusBarViewModel extends BaseModel
     public StatusBarViewModel(StatusBar model)
     {
         this.model = model;
-        this.model.addPropertyChangeListener(this.listener);
+        this.model.addPropertyChangeListener(StatusBar.DATE_PROP_NAME, this.dateChangeListener);
+        this.model.addPropertyChangeListener(StatusBar.MESSAGE_PROP_NAME, this.messageChangeListener);
 
         this.timeKeeper = new TimeKeeper();
         this.timeKeeper.startRunning(this.model);
@@ -55,7 +61,8 @@ public class StatusBarViewModel extends BaseModel
 
     public void dispose()
     {
-        this.model.removePropertyChangeListener(this.listener);
+        this.model.removePropertyChangeListener(StatusBar.DATE_PROP_NAME, this.dateChangeListener);
+        this.model.removePropertyChangeListener(StatusBar.MESSAGE_PROP_NAME, this.messageChangeListener);
         this.timeKeeper.stopRunning();
     }
 
@@ -90,5 +97,19 @@ public class StatusBarViewModel extends BaseModel
         {
             this.firePropertyChange(TIME_PROP_NAME, this.time, this.time = time);
         }
+    }
+
+
+
+    public String getMessage()
+    {
+        return message;
+    }
+
+
+
+    public void setMessage(String message)
+    {
+        this.firePropertyChange(MESSAGE_PROP_NAME, this.message, this.message = message);
     }
 }
