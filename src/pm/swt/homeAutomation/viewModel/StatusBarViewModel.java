@@ -30,8 +30,7 @@ public class StatusBarViewModel extends BaseModel
         public void propertyChange(PropertyChangeEvent evt)
         {
             Date newTime = (Date) evt.getNewValue();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
-            setTime(dateFormat.format(newTime));
+            setTime(newTime);
         }
     };
 
@@ -53,6 +52,8 @@ public class StatusBarViewModel extends BaseModel
         this.model.addPropertyChangeListener(StatusBar.DATE_PROP_NAME, this.dateChangeListener);
         this.model.addPropertyChangeListener(StatusBar.MESSAGE_PROP_NAME, this.messageChangeListener);
 
+        this.setTime(this.model.getDate());
+        
         this.timeKeeper = new TimeKeeper();
         this.timeKeeper.startRunning(this.model);
     }
@@ -74,6 +75,11 @@ public class StatusBarViewModel extends BaseModel
     }
 
 
+    public void setTime(Date time)
+    {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
+        this.setTime(dateFormat.format(time));
+    }
 
     public void setTime(String time)
     {

@@ -10,14 +10,14 @@ public class ConfigurationModel extends BaseModel
     public static final String MQTT_ADDRESS = "mqttAddress";
     public static final String MQTT_RECONNECT_INTERVAL_SECONDS = "mqttReconnectIntervalSeconds";
 
-    private double fullBatteryLevel;
-    private double mediumBatteryLevel;
-    private double lowBatteryLevel;
+    private double fullBatteryLevel = 4;
+    private double mediumBatteryLevel = 3.7;
+    private double lowBatteryLevel = 3.3;
     
-    private String mqttAddress;
-    private String mqttPort;
+    private String mqttAddress = "localhost";
+    private String mqttPort = "1883";
 
-    private int mqttReconnectIntervalSeconds;
+    private int mqttReconnectIntervalSeconds = 5;
 
     /**
      * The amount of failed station check-ins before an error flag is raised.

@@ -122,14 +122,7 @@ public class FileChangedTracker
 
                 watchKey.reset();
                 
-                try
-                {
-                    Thread.sleep(20);
-                }
-                catch (InterruptedException e)
-                {
-                    e.printStackTrace();
-                }
+                Thread.yield();
             }
         }
     }

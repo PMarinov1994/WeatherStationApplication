@@ -54,7 +54,9 @@ public abstract class WeatherStationViewModel extends BaseModel
         this.model.addPropertyChangeListener(this.listener);
 
         this.temperature = "N/A" + TEMP_CEL_SIM;
-
+        this.batteryLevel = this.model.getBatteryLevel();
+        this.stationStatus = this.model.getStatus();
+        
         this.ssTracker = new StationStatusTracker(model);
         this.ssTracker.startTracking();
     }

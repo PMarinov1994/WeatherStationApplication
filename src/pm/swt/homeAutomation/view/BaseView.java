@@ -22,7 +22,7 @@ public abstract class BaseView extends Composite
     public BaseView(Composite parent, int style)
     {
         super(parent, style);
-        
+
         this.addDisposeListener(new DisposeListener()
         {
 
@@ -48,7 +48,10 @@ public abstract class BaseView extends Composite
     public void dispose()
     {
         for (Font font : this.resizableControls.values())
-            font.dispose();
+        {
+            if (font != null)
+                font.dispose();
+        }
 
         super.dispose();
     }
@@ -84,6 +87,9 @@ public abstract class BaseView extends Composite
         FontData[] fontData = label.getFont().getFontData();
 
         int textLen = label.getText().length();
+        if (textLen == 0)
+            return;
+
         int charWidth = size.x / textLen;
 
         fontData[0].setHeight(charWidth);

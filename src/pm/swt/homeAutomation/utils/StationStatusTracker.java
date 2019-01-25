@@ -19,6 +19,7 @@ public class StationStatusTracker
     private volatile int checkInTime = -1; // in milliseconds.
 
     private volatile boolean checkedIn = false;
+    private volatile int failedCheckins = 0;
 
     private PropertyChangeListener changeListener = new PropertyChangeListener()
     {
@@ -37,6 +38,7 @@ public class StationStatusTracker
                 checkInTime = (int) evt.getNewValue() /* minutes */ * 60 /* seconds */ * 1000 /* milliseconds */;
             default:
                 checkedIn = true;
+                failedCheckins = 0;
                 break;
             }
         }
@@ -115,7 +117,7 @@ public class StationStatusTracker
             this.changeStatus(StationStatus.STANDBY_STATUS);
 
             // Wait for the checkInTime to be initialized.
-            while (tracking)
+            while (StationStatusTracker.this.tracking)
             {
                 if (checkInTime >= 0)
                     break;
@@ -134,15 +136,14 @@ public class StationStatusTracker
 
             // After we have a checkInTime set we can start tracking
             // the station status.
-            int failedCheckins = 0;
             boolean ignoreNoCheckin = false;
-            while (tracking)
+            while (StationStatusTracker.this.tracking)
             {
-                if (checkedIn || ignoreNoCheckin)
+                if (StationStatusTracker.this.checkedIn || ignoreNoCheckin)
                 {
-                    nextCheckIn = new Date((new Date()).getTime() + checkInTime);
+                    this.nextCheckIn = new Date((new Date()).getTime() + StationStatusTracker.this.checkInTime);
                     ignoreNoCheckin = false;
-                    checkedIn = false;
+                    StationStatusTracker.this.checkedIn = false;
                 }
 
                 // Give some buffer time for the message to come
@@ -150,30 +151,23 @@ public class StationStatusTracker
                 //
                 // Sometimes stations fail to report every single time.
                 // Its OK to skip some check-ins and not mark them as errors.
-                if (nextCheckIn.getTime() - (new Date()).getTime() + bufferTime < 0)
+                if (this.nextCheckIn.getTime() - (new Date()).getTime() + this.bufferTime < 0)
                 {
-                    if (++failedCheckins < this.errorsBeforeFail)
+                    if (StationStatusTracker.this.failedCheckins < this.errorsBeforeFail)
                     {
+                        ++StationStatusTracker.this.failedCheckins;
                         ignoreNoCheckin = true;
                     }
                     else
                     {
                         this.changeStatus(StationStatus.ERROR_STATUS);
-                        failedCheckins = 0;
                         ignoreNoCheckin = false;
                     }
                 }
                 else
                     this.changeStatus(StationStatus.OK_STATUS);
 
-                try
-                {
-                    Thread.sleep(20);
-                }
-                catch (InterruptedException e)
-                {
-                    e.printStackTrace();
-                }
+                Thread.yield();
             }
         }
 
@@ -181,9 +175,9 @@ public class StationStatusTracker
 
         private void changeStatus(StationStatus status)
         {
-            StationStatus oldStatus = station.getStatus();
+            StationStatus oldStatus = StationStatusTracker.this.station.getStatus();
             if (oldStatus != status)
-                station.setStatus(status);
+                StationStatusTracker.this.station.setStatus(status);
         }
     }
 }

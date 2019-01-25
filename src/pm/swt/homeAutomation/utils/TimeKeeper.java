@@ -55,15 +55,7 @@ public class TimeKeeper
             while (isRunning)
             {
                 this.statusBarModel.setDate(new Date());
-
-                try
-                {
-                    Thread.sleep(20);
-                }
-                catch (InterruptedException e)
-                {
-                    e.printStackTrace();
-                }
+                Thread.yield();
             }
         }
 

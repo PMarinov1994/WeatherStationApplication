@@ -8,8 +8,8 @@ public class StatusBar extends BaseModel
     public static final String MESSAGE_PROP_NAME = "message";
     public static final String DATE_PROP_NAME = "date";
 
-    private Date date;
-    private String message;
+    private Date date = new Date();
+    private String message = "";
 
 
 
