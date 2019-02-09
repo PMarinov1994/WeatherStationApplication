@@ -184,7 +184,14 @@ public class MqttWorker
                     nextCheck = new Date(new Date().getTime() + mqttReconnectDelaySeconds * 1000);
                     recalculateReconnectDelay = false;
                     
-                    Thread.yield();
+                    try
+                    {
+                        Thread.sleep(20);
+                    }
+                    catch (InterruptedException e)
+                    {
+                        e.printStackTrace();
+                    }
                 }
             }
         });

@@ -167,7 +167,14 @@ public class StationStatusTracker
                 else
                     this.changeStatus(StationStatus.OK_STATUS);
 
-                Thread.yield();
+                try
+                {
+                    Thread.sleep(20);
+                }
+                catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
             }
         }
 
