@@ -18,6 +18,8 @@ public class ProgramEntry
 
     public static void main(String[] args)
     {
+        Thread.currentThread().setName("Main Thread. (UI Thread)");
+        
         SwtClassLoader swtClassLoader = new SwtClassLoader();
         swtClassLoader.addJarToClasspath();
 
@@ -45,8 +47,10 @@ public class ProgramEntry
             return;
         }
 
+        System.out.println("Creating UI...");
         HomeAutomationWindow mainView = new HomeAutomationWindow();        
-
+        System.out.println("UI Created succesfully!");
+        
         // After we create the UI start the MQTT, so that we receive
         // all the data. The PropertyChanged listener will not send the same
         // data twice, so we can miss some initial values.

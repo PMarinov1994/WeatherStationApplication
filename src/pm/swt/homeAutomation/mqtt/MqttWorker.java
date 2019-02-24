@@ -248,6 +248,8 @@ public class MqttWorker
         @Override
         public void messageArrived(String topic, MqttMessage message) throws Exception
         {
+            System.out.println("Mqtt thread: " + Thread.currentThread().getName());
+            
             String messageStr = new String(message.getPayload());
 
             System.out.println(String.format("MQTT message arrived.\nTopic: %s\nMessage: %s\n\n",

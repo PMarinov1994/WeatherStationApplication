@@ -22,9 +22,11 @@ public class ConfigurationFileManager
     private static final String MQTT_PORT_DEFAULT = "1883";
     private static final String MQTT_ADDRESS_DEFAULT = "localhost";
     private static final int MQTT_RECONNECT_INTERVAL_SECONDS_DEFAULT = 2;
+    private static final boolean APPLICATION_HOT_CONFIG_FILE_CHANGE_DEFAULT = false;
 
     private static volatile boolean isConfigured = false;
 
+    private final String CONFIG_FOLDER = "configuration";
     private final String CONFIG_FILE_NAME = "config.txt";
     private final String CONFIG_FILE_PATH;
 
@@ -43,15 +45,21 @@ public class ConfigurationFileManager
         isConfigured = true;
 
         String jarExecPath = GlobalResources.getExecJarPath();
-        CONFIG_FILE_PATH = String.format("%s%s%s", jarExecPath, File.separator, CONFIG_FILE_NAME);
+        CONFIG_FILE_PATH = String.format("%s%s%s%s%s", jarExecPath, File.separator, CONFIG_FOLDER, File.separator, CONFIG_FILE_NAME);
 
         File configFile = new File(CONFIG_FILE_PATH);
         ConfigurationSerializer serializer = new ConfigurationSerializer(configFile);
 
+        System.out.println("Looking for configuration file...");
         if (!configFile.exists())
+        {
+            System.out.println("Configuration file not found. Creating one.");
             this.config = this.createConfigurationFile(serializer);
+        }
         else
         {
+            System.out.println("Configuration file FOUND!");
+
             try
             {
                 this.config = serializer.deserialize();
@@ -63,17 +71,22 @@ public class ConfigurationFileManager
             }
         }
 
-        this.fileTracker = new FileChangedTracker(CONFIG_FILE_PATH);
-        this.fileTracker.startTracker(new INotifyFileChanged()
-        {
+        System.out.println("Application opption hot change enable: " + this.config.isApplicationHotParametersChangeEnable());
 
-            @Override
-            public void fileChanged()
+        if (this.config.isApplicationHotParametersChangeEnable())
+        {
+            this.fileTracker = new FileChangedTracker(CONFIG_FILE_PATH);
+            this.fileTracker.startTracker(new INotifyFileChanged()
             {
-                config = serializer.deserialize();
-                fireConfigurationChange(config);
-            }
-        });
+
+                @Override
+                public void fileChanged()
+                {
+                    config = serializer.deserialize();
+                    fireConfigurationChange(config);
+                }
+            });
+        }
 
         this.subscribers = new ArrayList<>();
     }
@@ -117,6 +130,10 @@ public class ConfigurationFileManager
     {
         File file = serializer.getFile();
 
+        File folder = file.getParentFile();
+        if (!folder.exists())
+            folder.mkdirs();
+
         try
         {
             file.createNewFile();
@@ -135,6 +152,7 @@ public class ConfigurationFileManager
         model.setMqttAddress(MQTT_ADDRESS_DEFAULT);
         model.setMqttPort(MQTT_PORT_DEFAULT);
         model.setMqttReconnectIntervalSeconds(MQTT_RECONNECT_INTERVAL_SECONDS_DEFAULT);
+        model.setApplicationHotParametersChangeEnable(APPLICATION_HOT_CONFIG_FILE_CHANGE_DEFAULT);
 
         serializer.serialize(model);
         return model;

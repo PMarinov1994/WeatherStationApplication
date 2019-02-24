@@ -95,6 +95,15 @@ public class HomeAutomationWindow
                 // if there are currently no other OS event to process
                 // sleep until the next OS event is available
                 display.sleep();
+                
+                try
+                {
+                    Thread.sleep(20);
+                }
+                catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
             }
         }
 

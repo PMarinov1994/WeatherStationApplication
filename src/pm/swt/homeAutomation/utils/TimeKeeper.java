@@ -52,6 +52,8 @@ public class TimeKeeper
         @Override
         public void run()
         {
+            Thread.currentThread().setName("Time keeper Thread");
+            
             while (isRunning)
             {
                 this.statusBarModel.setDate(new Date());

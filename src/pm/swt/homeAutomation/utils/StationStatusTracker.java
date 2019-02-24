@@ -114,6 +114,8 @@ public class StationStatusTracker
         @Override
         public void run()
         {
+            Thread.currentThread().setName("Station Status Tracker Thread.");
+            
             this.changeStatus(StationStatus.STANDBY_STATUS);
 
             // Wait for the checkInTime to be initialized.

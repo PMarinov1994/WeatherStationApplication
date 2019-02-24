@@ -9,15 +9,18 @@ public class ConfigurationModel extends BaseModel
     public static final String MQTT_PORT = "mqttPort";
     public static final String MQTT_ADDRESS = "mqttAddress";
     public static final String MQTT_RECONNECT_INTERVAL_SECONDS = "mqttReconnectIntervalSeconds";
+    public static final String APPLICATION_HOT_PARAMETERS_CHANGE_ENABLE = "applicationHotParametersChangeEnable";
 
     private double fullBatteryLevel = 4;
     private double mediumBatteryLevel = 3.7;
     private double lowBatteryLevel = 3.3;
-    
+
     private String mqttAddress = "localhost";
     private String mqttPort = "1883";
 
     private int mqttReconnectIntervalSeconds = 5;
+
+    private boolean applicationHotParametersChangeEnable = false;
 
     /**
      * The amount of failed station check-ins before an error flag is raised.
@@ -120,5 +123,22 @@ public class ConfigurationModel extends BaseModel
     public void setMqttReconnectIntervalSeconds(int mqttReconnectIntervalSeconds)
     {
         this.firePropertyChange(MQTT_RECONNECT_INTERVAL_SECONDS, this.mqttReconnectIntervalSeconds, this.mqttReconnectIntervalSeconds = mqttReconnectIntervalSeconds);
+    }
+
+
+
+    public boolean isApplicationHotParametersChangeEnable()
+    {
+        return applicationHotParametersChangeEnable;
+    }
+
+
+
+    public void setApplicationHotParametersChangeEnable(boolean applicationHotParametersChangeEnable)
+    {
+        this.firePropertyChange(
+                APPLICATION_HOT_PARAMETERS_CHANGE_ENABLE,
+                this.applicationHotParametersChangeEnable,
+                this.applicationHotParametersChangeEnable = applicationHotParametersChangeEnable);
     }
 }

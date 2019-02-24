@@ -88,6 +88,8 @@ public class FileChangedTracker
         @Override
         public void run()
         {
+            Thread.currentThread().setName("File Change Tracker Thread.");
+            
             while (this.isRunning)
             {
                 WatchKey watchKey = this.watcher.poll();
@@ -124,7 +126,7 @@ public class FileChangedTracker
                 
                 try
                 {
-                    Thread.sleep(20);
+                    Thread.sleep(500);
                 }
                 catch (InterruptedException e)
                 {
