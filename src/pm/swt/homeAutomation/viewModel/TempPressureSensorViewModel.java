@@ -11,8 +11,10 @@ public class TempPressureSensorViewModel extends WeatherStationViewModel
     private static final String PRESSURE_STRING_FORMAT = "%dp";
 
     public static final String PRESSURE_PROP_NAME = "pressure";
+    public static final String HUMIDITY_PROP_NAME = "humidity";
 
     private String pressure;
+    private String humidity;
 
 
 
@@ -21,6 +23,7 @@ public class TempPressureSensorViewModel extends WeatherStationViewModel
         super(model, homeSector);
 
         setPressure("N/Ap");
+        setHumidity("N/A%");
     }
 
 
@@ -49,6 +52,10 @@ public class TempPressureSensorViewModel extends WeatherStationViewModel
         case TempPressureSensor.PRESSURE_PROP_NAME:
             this.setPressure(this.formatPressure((double) evt.getNewValue()));
             break;
+
+        case TempPressureSensor.HUMIDITY_PROP_NAME:
+            this.setHumidity(this.formatHum((double) evt.getNewValue()));
+            break;
         default:
             break;
         }
@@ -57,7 +64,28 @@ public class TempPressureSensorViewModel extends WeatherStationViewModel
 
 
     private String formatPressure(double pressure)
-    {        
-        return String.format(PRESSURE_STRING_FORMAT, (int)pressure);
+    {
+        return String.format(PRESSURE_STRING_FORMAT, (int) pressure);
+    }
+
+
+
+    private String formatHum(double hum)
+    {
+        return String.format("%02.1f%%", hum);
+    }
+
+
+
+    public String getHumidity()
+    {
+        return humidity;
+    }
+
+
+
+    public void setHumidity(String humidity)
+    {
+        this.firePropertyChange(HUMIDITY_PROP_NAME, this.humidity, this.humidity = humidity);
     }
 }

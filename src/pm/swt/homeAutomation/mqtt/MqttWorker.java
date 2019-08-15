@@ -357,6 +357,10 @@ public class MqttWorker
                 double altitude = Double.parseDouble(message);
                 this.outsideSensorModel.setAltitude(altitude);
                 break;
+            case "humidity":
+                double humidity = Double.parseDouble(message);
+                this.outsideSensorModel.setHumidity(humidity);
+                break;
             }
         }
 

@@ -120,7 +120,9 @@ public class ConfigurationFileManager
 
     public void dispose()
     {
-        this.fileTracker.stopTracker();
+        if (this.config.isApplicationHotParametersChangeEnable())
+            this.fileTracker.stopTracker();
+        
         this.subscribers.clear();
     }
 

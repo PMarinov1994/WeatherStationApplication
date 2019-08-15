@@ -4,9 +4,11 @@ public class TempPressureSensor extends BaseWeatherStationModel
 {
     public static final String PRESSURE_PROP_NAME = "pressure";
     public static final String ALTITUDE_PROP_NAME = "altitude";
+    public static final String HUMIDITY_PROP_NAME = "humidity";
 
     private double pressure = 0;
     private double altitude = 0;
+    private double humidity = 0;
 
 
 
@@ -34,5 +36,19 @@ public class TempPressureSensor extends BaseWeatherStationModel
     public void setAltitude(double altitude)
     {
         this.firePropertyChange(ALTITUDE_PROP_NAME, this.altitude, this.altitude = altitude);
+    }
+
+
+
+    public double getHumidity()
+    {
+        return humidity;
+    }
+
+
+
+    public void setHumidity(double humidity)
+    {
+        this.firePropertyChange(HUMIDITY_PROP_NAME, this.humidity, this.humidity = humidity);
     }
 }

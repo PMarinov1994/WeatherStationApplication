@@ -14,12 +14,14 @@ import pm.swt.homeAutomation.viewModel.WeatherStationViewModel;
 public class TempPressureSensorView extends BaseTempSensorView
 {
     private CLabel pressureLabel;
+    private CLabel humidityLabel;
 
 
 
     public TempPressureSensorView(Composite parent, TempPressureSensorViewModel viewModel)
     {
         super(parent, viewModel);
+        this.registerResizableControl(humidityLabel);
         this.registerResizableControl(pressureLabel);
     }
 
@@ -37,6 +39,12 @@ public class TempPressureSensorView extends BaseTempSensorView
             this.onCtrlTextChange(pressureLabel);
 
             break;
+            
+        case TempPressureSensorViewModel.HUMIDITY_PROP_NAME:
+            humidityLabel.setText((String) evt.getNewValue());
+            this.onCtrlTextChange(humidityLabel);
+            
+            break;
         default:
             break;
         }
@@ -51,6 +59,12 @@ public class TempPressureSensorView extends BaseTempSensorView
 
         GridData dataValue = new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1);
 
+        this.humidityLabel = new CLabel(parent, SWT.CENTER);
+        this.humidityLabel.setLayoutData(dataValue);
+        this.humidityLabel.setText(currViewModel.getHumidity());
+        this.humidityLabel.setBackground(backgroundColor);
+        this.humidityLabel.setForeground(foregroundColor);
+        
         this.pressureLabel = new CLabel(parent, SWT.CENTER);
         this.pressureLabel.setLayoutData(dataValue);
         this.pressureLabel.setText(currViewModel.getPressure());
