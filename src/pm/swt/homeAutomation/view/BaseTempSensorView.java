@@ -236,8 +236,6 @@ public abstract class BaseTempSensorView extends BaseView
             }
         });
 
-        new Label(imgComp, SWT.None).setBackground(this.backgroundColor);
-
         imgComp.addListener(SWT.Resize, new Listener()
         {
 
