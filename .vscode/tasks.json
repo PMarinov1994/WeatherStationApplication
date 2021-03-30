@@ -1,0 +1,51 @@
+{
+	"version": "2.0.0",	
+	"tasks": [
+		{
+			"label": "Rebuild output",
+			"dependsOrder": "sequence",
+			"dependsOn": [
+				"PowerShell delete old build",
+				"java: exportjar:WeatherStationApplication",
+				"PowerShell copy configurations",
+				"PowerShell copy icons",
+				"PowerShell copy libs",
+			],
+			"problemMatcher": [],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		},
+		{
+			"type": "java",
+			"label": "java: exportjar:WeatherStationApplication",
+			"mainClass": "pm.swt.homeAutomation.ProgramEntry",
+			"targetPath": "${workspaceFolder}/build/HomeAutomation.jar",
+			"elements": [
+				"${compileOutput}",
+			],
+			"problemMatcher": []
+		},
+		{
+			"label": "PowerShell delete old build",
+			"type": "shell",
+			"command": "Remove-Item -Recurse -Force ${workspaceFolder}/build"
+		},
+		{
+			"label": "PowerShell copy icons",
+			"type": "shell",
+			"command": "Copy-Item -Recurse -Force ${workspaceFolder}/icons ${workspaceFolder}/build/"
+		},
+		{
+			"label": "PowerShell copy libs",
+			"type": "shell",
+			"command": "Copy-Item -Recurse -Force ${workspaceFolder}/lib ${workspaceFolder}/build/"
+		},
+		{
+			"label": "PowerShell copy configurations",
+			"type": "shell",
+			"command": "Copy-Item -Recurse -Force ${workspaceFolder}/configuration ${workspaceFolder}/build/"
+		}
+	]
+}

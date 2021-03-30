@@ -14,6 +14,8 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
+import pm.swt.homeAutomation.configurator.UILayoutManager;
+import pm.swt.homeAutomation.configurator.UISector;
 import pm.swt.homeAutomation.model.StatusBar;
 import pm.swt.homeAutomation.model.TempHumSensor;
 import pm.swt.homeAutomation.model.TempPressureSensor;
@@ -22,7 +24,6 @@ import pm.swt.homeAutomation.system.SystemInfo;
 import pm.swt.homeAutomation.system.SystemType;
 import pm.swt.homeAutomation.utils.DependencyIndector;
 import pm.swt.homeAutomation.utils.GlobalResources;
-import pm.swt.homeAutomation.utils.StationLocation;
 import pm.swt.homeAutomation.viewModel.StatusBarViewModel;
 import pm.swt.homeAutomation.viewModel.TempHumSensorViewModel;
 import pm.swt.homeAutomation.viewModel.TempPressureSensorViewModel;
@@ -137,30 +138,25 @@ public class HomeAutomationWindow
         statusBarGridData.horizontalSpan = GRID_COLS;
         statusBarView.setLayoutData(statusBarGridData);
 
+        UILayoutManager layoutManager = (UILayoutManager)di.resolveInstance(GlobalResources.UI_LAYOUT_MANAGER_NAME);
+        UISector[] sectors = layoutManager.getSectors();
 
-        // BedRoom
-        TempHumSensor bedRoomModel = (TempHumSensor) di.resolveInstance(GlobalResources.BED_ROOM_INSTANCE_MODEL_NAME);
-        TempHumSensorView bedRoomView = new TempHumSensorView(
-                mainComp,
-                new TempHumSensorViewModel(bedRoomModel, StationLocation.BED_ROOM));
-
-        bedRoomView.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
-        // LivingRoom
-        TempHumSensor livingRoomModel = (TempHumSensor) di.resolveInstance(GlobalResources.LIVING_ROOM_INSTANCE_MODEL_NAME);
-        TempHumSensorView livingRoomView = new TempHumSensorView(
-                mainComp,
-                new TempHumSensorViewModel(livingRoomModel, StationLocation.LIVING_ROOM));
-
-        livingRoomView.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
-        // OutSide
-        TempPressureSensor outsideModel = (TempPressureSensor) di.resolveInstance(GlobalResources.OUTSIDE_INSTANCE_MODEL_NAME);
-        TempPressureSensorView outsideView = new TempPressureSensorView(
-                mainComp,
-                new TempPressureSensorViewModel(outsideModel, StationLocation.OUTSIDE));
-
-        outsideView.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        for (UISector uiSector : sectors)
+        {
+            BaseTempSensorView view = null;
+            switch (uiSector.getSensorType())
+            {
+                case AM2320:
+                    view = new TempHumSensorView(mainComp, new TempHumSensorViewModel(uiSector.getModel(TempHumSensor.class), uiSector.getIconName()));
+                    view.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+                    break;
+            
+                case BME280:
+                    view = new TempPressureSensorView(mainComp, new TempPressureSensorViewModel(uiSector.getModel(TempPressureSensor.class), uiSector.getIconName()));
+                    view.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+                    break;
+            }
+        }
     }
 
 

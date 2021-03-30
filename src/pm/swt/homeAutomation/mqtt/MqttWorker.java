@@ -1,7 +1,10 @@
 package pm.swt.homeAutomation.mqtt;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -13,6 +16,8 @@ import org.eclipse.paho.client.mqttv3.persist.MqttDefaultFilePersistence;
 
 import pm.swt.homeAutomation.configurator.ConfigurationFileManager;
 import pm.swt.homeAutomation.configurator.IConfigurationChanged;
+import pm.swt.homeAutomation.configurator.UILayoutManager;
+import pm.swt.homeAutomation.configurator.UISector;
 import pm.swt.homeAutomation.model.BatteryLevel;
 import pm.swt.homeAutomation.model.ConfigurationModel;
 import pm.swt.homeAutomation.model.TempHumSensor;
@@ -24,12 +29,6 @@ import pm.swt.homeAutomation.utils.GlobalResources;
 public class MqttWorker
 {
     private static final char SECTOR_SEPARATOR = '/';
-
-    private static final String BED_ROOM_TOPIC = "bedroom";
-    private static final String LIVING_ROOM_TOPIC = "livingRoom";
-    private static final String OUTSIDE_TOPIC = "outside";
-
-    private static final String[] MQTT_TOPICS = { "bedroom/#", "livingRoom/#", "outside/#" };
     private static final String MQTT_QOS_SUB_FOLDER = "mqttQOS";
 
     private final String MQTT_SERVER_ADDRESS;
@@ -45,7 +44,6 @@ public class MqttWorker
     private volatile double mediumBatteryV;
     private volatile int mqttReconnectDelaySeconds;
     private volatile boolean recalculateReconnectDelay = false;
-
 
 
     public MqttWorker()
@@ -83,7 +81,6 @@ public class MqttWorker
                 mediumBatteryV = newConfig.getMediumBatteryLevel();
                 mqttReconnectDelaySeconds = newConfig.getMqttReconnectIntervalSeconds();
                 recalculateReconnectDelay = true;
-
             }
         });
     }
@@ -108,7 +105,18 @@ public class MqttWorker
 
             System.out.println("Connected!");
             client.setCallback(this.callBack);
-            client.subscribe(MQTT_TOPICS);
+            
+            DependencyIndector di = DependencyIndector.getInstance();
+            UILayoutManager layoutManager = (UILayoutManager)di.resolveInstance(GlobalResources.UI_LAYOUT_MANAGER_NAME);
+
+            List<String> topics = new ArrayList<>();
+            for (UISector sector : layoutManager.getSectors())
+                topics.add(sector.getMqttTopic() + "/#");
+
+            int[] qos = new int[topics.size()];
+            Arrays.fill(qos, 0);
+
+            client.subscribe(topics.toArray(new String[0]), qos);
         }
         catch (MqttException e)
         {
@@ -143,7 +151,7 @@ public class MqttWorker
 
                 System.out.println("Closing client...");
             }
-            
+
             this.client.close(true);
         }
         catch (MqttException e)
@@ -183,7 +191,7 @@ public class MqttWorker
 
                     nextCheck = new Date(new Date().getTime() + mqttReconnectDelaySeconds * 1000);
                     recalculateReconnectDelay = false;
-                    
+
                     try
                     {
                         Thread.sleep(20);
@@ -200,27 +208,16 @@ public class MqttWorker
     }
 
 
-
     private class MqttWorkerCallback implements MqttCallback
     {
-        private TempHumSensor bedRoomSensorModel;
-        private TempHumSensor livingRoomSensorModel;
-        private TempPressureSensor outsideSensorModel;
-
-        private DependencyIndector di;
-
-
+        private UISector[] sectors;
 
         public MqttWorkerCallback()
         {
-            this.di = DependencyIndector.getInstance();
+            DependencyIndector di = DependencyIndector.getInstance();
+            UILayoutManager layoutManager = (UILayoutManager)di.resolveInstance(GlobalResources.UI_LAYOUT_MANAGER_NAME);
 
-            this.bedRoomSensorModel = (TempHumSensor) this.di
-                    .resolveInstance(GlobalResources.BED_ROOM_INSTANCE_MODEL_NAME);
-            this.livingRoomSensorModel = (TempHumSensor) this.di
-                    .resolveInstance(GlobalResources.LIVING_ROOM_INSTANCE_MODEL_NAME);
-            this.outsideSensorModel = (TempPressureSensor) this.di
-                    .resolveInstance(GlobalResources.OUTSIDE_INSTANCE_MODEL_NAME);
+            this.sectors = layoutManager.getSectors();
         }
 
 
@@ -249,7 +246,7 @@ public class MqttWorker
         public void messageArrived(String topic, MqttMessage message) throws Exception
         {
             System.out.println("Mqtt thread: " + Thread.currentThread().getName());
-            
+
             String messageStr = new String(message.getPayload());
 
             System.out.println(String.format("MQTT message arrived.\nTopic: %s\nMessage: %s\n\n",
@@ -258,112 +255,81 @@ public class MqttWorker
             String messageOrigin = topic.substring(0, topic.indexOf(SECTOR_SEPARATOR));
             String subTopic = topic.substring(topic.indexOf(SECTOR_SEPARATOR) + 1, topic.length());
 
-            switch (messageOrigin)
+            for (UISector uiSector : sectors)
             {
-            case BED_ROOM_TOPIC:
-                this.handleBedroomMsg(subTopic, messageStr);
+                String sectorTopic = uiSector.getMqttTopic();
+                if (!sectorTopic.equals(messageOrigin))
+                    continue;
+
+                switch (uiSector.getSensorType()) {
+                    case BME280:
+                        this.handleBME280(subTopic, messageStr, uiSector.getModel(TempPressureSensor.class));
+                        break;                
+                    case AM2320:
+                        this.handleAM2320(subTopic, messageStr, uiSector.getModel(TempHumSensor.class));
+                        break;
+                }
+            }
+        }
+
+        private void handleAM2320(String topic, String message, TempHumSensor model)
+        {
+            switch (topic)
+            {
+            case "temperature":
+                double temp = Double.parseDouble(message);
+                model.setTempreture(temp);    
                 break;
-            case LIVING_ROOM_TOPIC:
-                this.handleLivingRoomMsg(subTopic, messageStr);
+            case "humidity":
+                double hum = Double.parseDouble(message);
+                model.setHumidity(hum);
                 break;
-            case OUTSIDE_TOPIC:
-                this.handleOutsideMsg(subTopic, messageStr);
+            case "refreshInterval":
+                int refreshInt = Integer.parseInt(message);
+                model.setRefreshInterval(refreshInt);
                 break;
-            default:
+            case "battery":
+                double volts = Double.parseDouble(message);
+                model.setBatteryLevel(this.parseBatteryLevel(volts));
                 break;
             }
         }
 
-
+        private void handleBME280(String topic, String message, TempPressureSensor model)
+        {
+            switch (topic)
+            {
+            case "temperature":
+                double temp = Double.parseDouble(message);
+                model.setTempreture(temp);
+                break;
+            case "pressure":
+                double pressure = Double.parseDouble(message);
+                model.setPressure(pressure);
+                break;
+            case "refreshInterval":
+                int refreshInt = Integer.parseInt(message);
+                model.setRefreshInterval(refreshInt);
+                break;
+            case "battery":
+                double volts = Double.parseDouble(message);
+                model.setBatteryLevel(this.parseBatteryLevel(volts));
+                break;
+            case "altitude":
+                double altitude = Double.parseDouble(message);
+                model.setAltitude(altitude);
+                break;
+            case "humidity":
+                double humidity = Double.parseDouble(message);
+                model.setHumidity(humidity);
+                break;
+            }
+        }
 
         @Override
         public void deliveryComplete(IMqttDeliveryToken token)
         {
         }
-
-
-
-        private void handleBedroomMsg(String topic, String message)
-        {
-            switch (topic)
-            {
-            case "temperature":
-                double temp = Double.parseDouble(message);
-                this.bedRoomSensorModel.setTempreture(temp);
-                break;
-            case "humidity":
-                double hum = Double.parseDouble(message);
-                this.bedRoomSensorModel.setHumidity(hum);
-                break;
-            case "refreshInterval":
-                int refreshInt = Integer.parseInt(message);
-                this.bedRoomSensorModel.setRefreshInterval(refreshInt);
-                break;
-            case "battery":
-                double volts = Double.parseDouble(message);
-                this.bedRoomSensorModel.setBatteryLevel(this.parseBatteryLevel(volts));
-                break;
-            }
-        }
-
-
-
-        private void handleLivingRoomMsg(String topic, String message)
-        {
-            switch (topic)
-            {
-            case "temperature":
-                double temp = Double.parseDouble(message);
-                this.livingRoomSensorModel.setTempreture(temp);
-                break;
-            case "humidity":
-                double hum = Double.parseDouble(message);
-                this.livingRoomSensorModel.setHumidity(hum);
-                break;
-            case "refreshInterval":
-                int refreshInt = Integer.parseInt(message);
-                this.livingRoomSensorModel.setRefreshInterval(refreshInt);
-                break;
-            case "battery":
-                double volts = Double.parseDouble(message);
-                this.livingRoomSensorModel.setBatteryLevel(this.parseBatteryLevel(volts));
-                break;
-            }
-        }
-
-
-
-        private void handleOutsideMsg(String topic, String message)
-        {
-            switch (topic)
-            {
-            case "temperature":
-                double temp = Double.parseDouble(message);
-                this.outsideSensorModel.setTempreture(temp);
-                break;
-            case "pressure":
-                double pressure = Double.parseDouble(message);
-                this.outsideSensorModel.setPressure(pressure);
-                break;
-            case "refreshInterval":
-                int refreshInt = Integer.parseInt(message);
-                this.outsideSensorModel.setRefreshInterval(refreshInt);
-                break;
-            case "battery":
-                double volts = Double.parseDouble(message);
-                this.outsideSensorModel.setBatteryLevel(this.parseBatteryLevel(volts));
-                break;
-            case "altitude":
-                double altitude = Double.parseDouble(message);
-                this.outsideSensorModel.setAltitude(altitude);
-                break;
-            case "humidity":
-                double humidity = Double.parseDouble(message);
-                this.outsideSensorModel.setHumidity(humidity);
-                break;
-            }
-        }
-
 
 
         private BatteryLevel parseBatteryLevel(double voltage)

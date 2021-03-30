@@ -1,0 +1,42 @@
+/!#$%!@$%@@#%
+#########################################
+#
+# This a configuration file for WeatherStation HomeAutomation App
+#
+#########################################
+
+
+### General usage of this file: ###
+#This is simple comment. Lines that start with '#' will be ingnored when parsed.
+#All parameters are key-value based and are in no order, i.e. the order can be changed.
+#All the paramerts are hot-plugged. This means that the application can be running and any change
+#to this file will result in immediate change of the program behavior
+#Empty lines will be ignored. Invalid paramerts and/or keys will lead to unexpected behavior.
+#No validation is made as of now.
+#/* Unused */ - The first line of this file confirms that this is the file that the program can use. DO NOT CHANGE IT.
+
+
+#Somethimes the stations fail to send data. This is how many consecutive fails are OK. Any more than this number and
+#the error alarm will be raised.
+missedReportsCount:3
+
+#If battery is above this value, we consider it full.
+fullBatteryLevel:4.0
+
+#If battery is above this value and below the previous one, we consider it medium. Anything else is low battery
+mediumBatteryLevel:3.7
+
+#This value is not used.
+lowBatteryLevel:3.3
+
+#This is the MQTT Brocker Address from which we get the data.
+mqttAddress:192.168.200.105
+
+#This is the MQTT Brocker Port to which we connect.
+mqttPort:1883
+
+#In case we get disconnected from the brocker, we will try to reconnect. This is the amount to wait before every try.
+mqttReconnectIntervalSeconds:2
+
+#Application supports hot parameter chaning. Its is disabled by default to save CPU usage. false - off, true - on.
+applicationHotParametersChangeEnable:false

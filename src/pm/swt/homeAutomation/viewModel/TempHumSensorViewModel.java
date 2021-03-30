@@ -3,7 +3,6 @@ package pm.swt.homeAutomation.viewModel;
 import java.beans.PropertyChangeEvent;
 
 import pm.swt.homeAutomation.model.TempHumSensor;
-import pm.swt.homeAutomation.utils.StationLocation;
 
 
 public class TempHumSensorViewModel extends WeatherStationViewModel
@@ -18,9 +17,9 @@ public class TempHumSensorViewModel extends WeatherStationViewModel
 
 
 
-    public TempHumSensorViewModel(TempHumSensor model, StationLocation homeSector)
+    public TempHumSensorViewModel(TempHumSensor model, String homeSectorIcon)
     {
-        super(model, homeSector);
+        super(model, homeSectorIcon);
 
         this.model = model;
         this.humidity = "N/A%";

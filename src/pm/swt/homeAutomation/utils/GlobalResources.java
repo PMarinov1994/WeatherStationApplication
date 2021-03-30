@@ -7,13 +7,10 @@ import java.nio.file.Paths;
 
 public abstract class GlobalResources
 {
-    public static final String LIVING_ROOM_INSTANCE_MODEL_NAME = "livingRoomSensorModel";
-    public static final String BED_ROOM_INSTANCE_MODEL_NAME = "bedRoomSensorModel";
     public static final String STATUS_BAR_INSTANCE_MODEL_NAME = "statusBarModel";
-    public static final String OUTSIDE_INSTANCE_MODEL_NAME = "outsideModel";
 
     public static final String CONFIGURATION_FILE_MANAGER_NAME = "configurationFileManager";
-
+    public static final String UI_LAYOUT_MANAGER_NAME = "uiLayoutManager";
 
     public static String getExecJarPath()
     {

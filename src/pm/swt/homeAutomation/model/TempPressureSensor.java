@@ -11,7 +11,6 @@ public class TempPressureSensor extends BaseWeatherStationModel
     private double humidity = 0;
 
 
-
     public double getPressure()
     {
         return pressure;

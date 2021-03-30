@@ -8,7 +8,6 @@ import org.eclipse.swt.widgets.Display;
 import pm.swt.homeAutomation.model.BaseModel;
 import pm.swt.homeAutomation.model.BaseWeatherStationModel;
 import pm.swt.homeAutomation.model.BatteryLevel;
-import pm.swt.homeAutomation.utils.StationLocation;
 import pm.swt.homeAutomation.utils.StationStatus;
 import pm.swt.homeAutomation.utils.StationStatusTracker;
 
@@ -23,7 +22,7 @@ public abstract class WeatherStationViewModel extends BaseModel
     public static final String TEMP_CEL_SIM = "\u2103";
 
     private String temperature;
-    private StationLocation homeSector;
+    private String homeSectorIcon;
     private StationStatus stationStatus;
     private BatteryLevel batteryLevel;
 
@@ -44,13 +43,13 @@ public abstract class WeatherStationViewModel extends BaseModel
 
 
 
-    public WeatherStationViewModel(BaseWeatherStationModel model, StationLocation homeSector)
+    public WeatherStationViewModel(BaseWeatherStationModel model, String homeSectorIcon)
     {
         this.model = model;
         this.setBatteryLevel(this.model.getBatteryLevel());
         this.setStationStatus(this.model.getStatus());
 
-        this.homeSector = homeSector;
+        this.homeSectorIcon = homeSectorIcon;
         this.model.addPropertyChangeListener(this.listener);
 
         this.temperature = "N/A" + TEMP_CEL_SIM;
@@ -84,16 +83,9 @@ public abstract class WeatherStationViewModel extends BaseModel
 
 
 
-    public StationLocation getHomeSector()
+    public String getHomeSectorIcon()
     {
-        return homeSector;
-    }
-
-
-
-    public void setHomeSector(StationLocation homeSector)
-    {
-        this.firePropertyChange(HOME_SECTOR_PROP_NAME, this.homeSector, this.homeSector = homeSector);
+        return homeSectorIcon;
     }
 
 

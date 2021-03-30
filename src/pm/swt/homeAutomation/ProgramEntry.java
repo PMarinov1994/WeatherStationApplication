@@ -1,11 +1,15 @@
 package pm.swt.homeAutomation;
 
+import java.io.IOException;
+
 import javax.naming.OperationNotSupportedException;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.xml.sax.SAXException;
 
 import pm.swt.homeAutomation.configurator.ConfigurationFileManager;
+import pm.swt.homeAutomation.configurator.UILayoutManager;
 import pm.swt.homeAutomation.model.StatusBar;
-import pm.swt.homeAutomation.model.TempHumSensor;
-import pm.swt.homeAutomation.model.TempPressureSensor;
 import pm.swt.homeAutomation.mqtt.MqttWorker;
 import pm.swt.homeAutomation.system.SwtClassLoader;
 import pm.swt.homeAutomation.utils.DependencyIndector;
@@ -25,15 +29,8 @@ public class ProgramEntry
 
         DependencyIndector di = DependencyIndector.getInstance();
 
-        TempHumSensor livingRoomSensorModel = new TempHumSensor();
-        TempHumSensor bedRoomSensorModel = new TempHumSensor();
-        TempPressureSensor outsideSensorModel = new TempPressureSensor();
         StatusBar statusBarModel = new StatusBar();
-
-        di.registerInstance(GlobalResources.LIVING_ROOM_INSTANCE_MODEL_NAME, livingRoomSensorModel);
-        di.registerInstance(GlobalResources.BED_ROOM_INSTANCE_MODEL_NAME, bedRoomSensorModel);
         di.registerInstance(GlobalResources.STATUS_BAR_INSTANCE_MODEL_NAME, statusBarModel);
-        di.registerInstance(GlobalResources.OUTSIDE_INSTANCE_MODEL_NAME, outsideSensorModel);
 
         ConfigurationFileManager configManager = null;
         try
@@ -42,6 +39,18 @@ public class ProgramEntry
             di.registerInstance(GlobalResources.CONFIGURATION_FILE_MANAGER_NAME, configManager);
         }
         catch (OperationNotSupportedException e)
+        {
+            e.printStackTrace();
+            return;
+        }
+
+        UILayoutManager layoutManager = new UILayoutManager();
+        try
+        {
+            layoutManager.initialize();
+            di.registerInstance(GlobalResources.UI_LAYOUT_MANAGER_NAME, layoutManager);
+        }
+        catch (ParserConfigurationException | SAXException | IOException e)
         {
             e.printStackTrace();
             return;

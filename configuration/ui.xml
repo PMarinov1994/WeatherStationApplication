@@ -1,0 +1,15 @@
+<!-- 
+    sensorType:
+    AM2320 - temp, hum.
+    BME280 - temp, hum, pressure, altitude.
+
+    locationIcon:
+    Path to the location ico.
+-->
+
+<ui>
+        <sector sensorType="AM2320" locationIcon="livingroom.png" name="livingRoom" mqttTopic="livingRoom" />
+        <sector sensorType="AM2320" locationIcon="bedroom.png" name="bedRoom" mqttTopic="bedroom" />
+        <sector sensorType="AM2320" locationIcon="kidsroom.png" name="kidsRoom" mqttTopic="kidsRoom" />
+        <sector sensorType="BME280" locationIcon="outside.png" name="outSide" mqttTopic="outside" />
+</ui>

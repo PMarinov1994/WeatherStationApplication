@@ -12,7 +12,6 @@ import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Rectangle;
@@ -26,19 +25,16 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 
 import pm.swt.homeAutomation.model.BatteryLevel;
-import pm.swt.homeAutomation.utils.StationLocation;
 import pm.swt.homeAutomation.utils.StationStatus;
 import pm.swt.homeAutomation.viewModel.WeatherStationViewModel;
 
 
 public abstract class BaseTempSensorView extends BaseView
 {
-    private static final double DEFAULT_DPI = 96.0;
     private static final int HEIGHT_RATIO = 4;
 
-    private static final String BEDROOM_LOCATION_IMG_PATH = "icons/bedroom.png";
-    private static final String LIVINGROOM_LOCATION_IMG_PATH = "icons/livingroom.png";
-    private static final String OUTSIDE_LOCATION_IMG_PATH = "icons/outside.png";
+    private static final String ICONS_FOLDER_PATH = "icons/";
+
     private static final String OK_STATUS_IMG_PATH = "icons/okStatus.png";
     private static final String STANDBY_STATUS_IMG_PATH = "icons/standByStatus.png";
     private static final String ERROR_STATUS_IMG_PATH = "icons/errorStatus.png";
@@ -89,7 +85,7 @@ public abstract class BaseTempSensorView extends BaseView
         this.viewModel = viewModel;
         this.viewModel.addPropertyChangeListener(this.listener);
 
-        this.locationImage = this.getImageLocation(this.viewModel.getHomeSector());
+        this.locationImage = this.getImageFromPath(ICONS_FOLDER_PATH + this.viewModel.getHomeSectorIcon());
         this.okStatusImage = this.getImageFromPath(OK_STATUS_IMG_PATH);
         this.standByImage = this.getImageFromPath(STANDBY_STATUS_IMG_PATH);
         this.errorImage = this.getImageFromPath(ERROR_STATUS_IMG_PATH);
@@ -284,23 +280,6 @@ public abstract class BaseTempSensorView extends BaseView
 
 
 
-    private Image getImageLocation(StationLocation location)
-    {
-        switch (location)
-        {
-        case BED_ROOM:
-            return this.getImageFromPath(BEDROOM_LOCATION_IMG_PATH);
-        case LIVING_ROOM:
-            return this.getImageFromPath(LIVINGROOM_LOCATION_IMG_PATH);
-        case OUTSIDE:
-            return this.getImageFromPath(OUTSIDE_LOCATION_IMG_PATH);
-        default:
-            return null;
-        }
-    }
-
-
-
     /**
      * Creates an <code>Image</code> object from a given absolute or relative path.
      * Note: The returned object must be disposed when not needed anymore!
@@ -323,13 +302,6 @@ public abstract class BaseTempSensorView extends BaseView
 
         ImageData imgData = new ImageData(is);
         Image img = new Image(this.getDisplay(), imgData);
-
-        Image rescaledImg = this.rescaleImageToDPI(img);
-        if (img != rescaledImg)
-        {
-            img.dispose();
-            img = rescaledImg;
-        }
 
         return img;
     }
@@ -358,43 +330,16 @@ public abstract class BaseTempSensorView extends BaseView
         if (labelSize.width == 0 || labelSize.height == 0)
             return;
 
+        int size = Math.min(labelSize.width, labelSize.height);
+
         Image oldImg = label.getImage();
         Image newImg = new Image(BaseTempSensorView.this.getDisplay(),
-                image.getImageData().scaledTo(labelSize.width, labelSize.height));
+                image.getImageData().scaledTo(size, size));
 
         label.setImage(newImg);
 
         if (oldImg != null)
             oldImg.dispose();
-    }
-
-
-
-    /**
-     * Rescale an image object to the correct DPI.
-     * NOTE: The returned image must be disposed when not needed anymore.
-     *
-     * @param image The image to correct.
-     * @return The corrected image.
-     */
-    private Image rescaleImageToDPI(Image image)
-    {
-        Device display = image.getDevice();
-        final double width = image.getBounds().width;
-        final double height = image.getBounds().height;
-        int currentDPI = display.getDPI().x;
-        if (currentDPI <= DEFAULT_DPI)
-        {
-            return image;
-        }
-        double multiplier = ((double) currentDPI) / DEFAULT_DPI;
-        double newWidth = width * multiplier;
-        double newHeight = height * multiplier;
-
-        Image scaledImage = new Image(Display.getCurrent(), image
-                .getImageData().scaledTo((int) newWidth, (int) newHeight));
-
-        return scaledImage;
     }
 
 
