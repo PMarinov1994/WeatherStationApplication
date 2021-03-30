@@ -71,7 +71,7 @@ public class TempPressureSensorViewModel extends WeatherStationViewModel
 
     private String formatHum(double hum)
     {
-        return String.format("%02.1f%%", hum);
+        return String.format("%02.0f%%", hum);
     }
 
 
