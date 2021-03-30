@@ -278,7 +278,7 @@ public class MqttWorker
             {
             case "temperature":
                 double temp = Double.parseDouble(message);
-                model.setTempreture(temp);    
+                model.setTempreture(temp);
                 break;
             case "humidity":
                 double hum = Double.parseDouble(message);
