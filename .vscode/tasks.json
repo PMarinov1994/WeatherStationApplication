@@ -6,7 +6,7 @@
 			"dependsOrder": "sequence",
 			"dependsOn": [
 				"PowerShell delete old build",
-				"java: exportjar:WeatherStationApplication",
+				"exportjar",
 				"PowerShell copy configurations",
 				"PowerShell copy icons",
 				"PowerShell copy libs",
@@ -19,7 +19,7 @@
 		},
 		{
 			"type": "java",
-			"label": "java: exportjar:WeatherStationApplication",
+			"label": "exportjar",
 			"mainClass": "pm.swt.homeAutomation.ProgramEntry",
 			"targetPath": "${workspaceFolder}/build/HomeAutomation.jar",
 			"elements": [
@@ -30,7 +30,7 @@
 		{
 			"label": "PowerShell delete old build",
 			"type": "shell",
-			"command": "Remove-Item -Recurse -Force ${workspaceFolder}/build"
+			"command": "Remove-Item -Recurse -ErrorAction Ignore ${workspaceFolder}/build"
 		},
 		{
 			"label": "PowerShell copy icons",

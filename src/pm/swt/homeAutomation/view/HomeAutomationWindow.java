@@ -4,6 +4,7 @@ package pm.swt.homeAutomation.view;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -62,9 +63,14 @@ public class HomeAutomationWindow
     public HomeAutomationWindow()
     {
         this.display = new Display();
-        this.shell = new Shell(this.display);
 
+        this.shell = new Shell(this.display);
+        this.shell.setBackground(this.display.getSystemColor(SWT.COLOR_BLACK));
         this.shell.setLayout(new FillLayout());
+
+        // Move the mouse to the bottom right corner.
+        Rectangle dispRec = this.display.getBounds();
+        this.display.setCursorLocation(dispRec.width, dispRec.height);
 
         this.createContent(this.shell);
 
@@ -116,9 +122,13 @@ public class HomeAutomationWindow
 
     private void createContent(Composite parent)
     {
-        final int GRID_COLS = 16;
+        UILayoutManager layoutManager = (UILayoutManager)di.resolveInstance(GlobalResources.UI_LAYOUT_MANAGER_NAME);
+        UISector[] sectors = layoutManager.getSectors();
+
+        final int GRID_COLS = sectors.length;
 
         Composite mainComp = new Composite(parent, SWT.NONE);
+        mainComp.setBackground(this.display.getSystemColor(SWT.COLOR_BLACK));
 
         // If columns are to be made equal, set mainComp background to black.
         // or a while strip will be shown on the right since the columns do not fill
@@ -137,9 +147,6 @@ public class HomeAutomationWindow
         GridData statusBarGridData = new GridData(SWT.FILL, SWT.TOP, true, false);
         statusBarGridData.horizontalSpan = GRID_COLS;
         statusBarView.setLayoutData(statusBarGridData);
-
-        UILayoutManager layoutManager = (UILayoutManager)di.resolveInstance(GlobalResources.UI_LAYOUT_MANAGER_NAME);
-        UISector[] sectors = layoutManager.getSectors();
 
         for (UISector uiSector : sectors)
         {

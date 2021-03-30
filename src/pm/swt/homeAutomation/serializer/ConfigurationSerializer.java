@@ -80,6 +80,10 @@ public class ConfigurationSerializer
                 case ConfigurationModel.APPLICATION_HOT_PARAMETERS_CHANGE_ENABLE:
                     model.setApplicationHotParametersChangeEnable(Boolean.parseBoolean(keyValue[1]));
                     break;
+
+                default:
+                    model.putAdditionalParamer(keyValue[0], keyValue[1]);
+                    break;
                 }
             }
         }
@@ -150,6 +154,9 @@ public class ConfigurationSerializer
         sb.append("#Application supports hot parameter chaning. Its is disabled by default to save CPU usage. false - off, true - on.\n");
         sb.append(String.format("%s%s%s\n\n", ConfigurationModel.APPLICATION_HOT_PARAMETERS_CHANGE_ENABLE,
                 PARAMETER_SEPARATOR_CHAR, model.isApplicationHotParametersChangeEnable()));
+
+        sb.append("#The margin between each Sector.\n");
+        sb.append("sectorUiMargin:20\n\n");
 
         try (FileWriter fw = new FileWriter(this.file);
                 BufferedWriter bw = new BufferedWriter(fw))

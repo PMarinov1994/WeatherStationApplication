@@ -1,5 +1,8 @@
 package pm.swt.homeAutomation.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ConfigurationModel extends BaseModel
 {
     public static final String MISSED_REPORTS_COUNT = "missedReportsCount";
@@ -26,6 +29,25 @@ public class ConfigurationModel extends BaseModel
      * The amount of failed station check-ins before an error flag is raised.
      */
     private int missedReportsCount;
+
+    private Map<String, String> additionalParameters = new HashMap<>();
+
+
+
+    public void putAdditionalParamer(String key, String value)
+    {
+        this.additionalParameters.put(key, value);
+    }
+
+
+
+    public String getAdditionalParamer(String key)
+    {
+        if (this.additionalParameters.get(key) == null)
+            return "";
+
+        return this.additionalParameters.get(key);
+    }
 
 
 

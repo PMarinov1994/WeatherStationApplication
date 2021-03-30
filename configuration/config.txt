@@ -40,3 +40,6 @@ mqttReconnectIntervalSeconds:2
 
 #Application supports hot parameter chaning. Its is disabled by default to save CPU usage. false - off, true - on.
 applicationHotParametersChangeEnable:false
+
+#The margin between each Sector.
+sectorUiMargin:20

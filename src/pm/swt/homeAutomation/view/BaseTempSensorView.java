@@ -24,7 +24,11 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 
+import pm.swt.homeAutomation.configurator.ConfigurationFileManager;
 import pm.swt.homeAutomation.model.BatteryLevel;
+import pm.swt.homeAutomation.model.ConfigurationModel;
+import pm.swt.homeAutomation.utils.DependencyIndector;
+import pm.swt.homeAutomation.utils.GlobalResources;
 import pm.swt.homeAutomation.utils.StationStatus;
 import pm.swt.homeAutomation.viewModel.WeatherStationViewModel;
 
@@ -132,8 +136,22 @@ public abstract class BaseTempSensorView extends BaseView
         this.foregroundColor = display.getSystemColor(SWT.COLOR_WHITE);
         this.backgroundColor = display.getSystemColor(SWT.COLOR_BLACK);
 
+        this.setBackground(this.backgroundColor);
+
+        DependencyIndector di = DependencyIndector.getInstance();
+        ConfigurationFileManager cFileManager = (ConfigurationFileManager)di.resolveInstance(GlobalResources.CONFIGURATION_FILE_MANAGER_NAME);
+        ConfigurationModel config = cFileManager.getConfig();
+
+        String marginStr = config.getAdditionalParamer("sectorUiMargin");
+        
+        int margin = 0;
+        if (!marginStr.isEmpty())
+          margin= Integer.parseInt(marginStr);
+
+        System.out.println(String.format("Layout margin is: %d", margin));
+
         GridLayout gridLayout = new GridLayout(1, true);
-        gridLayout.marginWidth = 0;
+        gridLayout.marginWidth = margin;
         gridLayout.marginHeight = 0;
         gridLayout.verticalSpacing = 0;
         gridLayout.horizontalSpacing = 0;
