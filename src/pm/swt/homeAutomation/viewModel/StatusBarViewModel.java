@@ -116,6 +116,23 @@ public class StatusBarViewModel extends BaseModel
 
     public void setMessage(String message)
     {
-        this.firePropertyChange(MESSAGE_PROP_NAME, this.message, this.message = message);
+        Display display = Display.getCurrent();
+        if (display == null)
+            display = Display.getDefault();
+
+        if (Thread.currentThread() != display.getThread())
+        {
+            display.asyncExec(new Runnable()
+            {
+
+                @Override
+                public void run()
+                {
+                    setMessage(message);
+                }
+            });
+        }
+        else
+            this.firePropertyChange(MESSAGE_PROP_NAME, this.message, this.message = message);
     }
 }

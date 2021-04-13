@@ -78,7 +78,7 @@ public class StatusBarView extends BaseView
         messageLabel.setForeground(foregroundColor);
         
         this.registerResizableControl(messageLabel);
-        messageLabel.setText(this.viewModel.getMessage());
+        messageLabel.setText("Status");
     }
 
 

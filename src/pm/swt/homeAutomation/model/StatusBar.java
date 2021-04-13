@@ -9,7 +9,7 @@ public class StatusBar extends BaseModel
     public static final String DATE_PROP_NAME = "date";
 
     private Date date = new Date();
-    private String message = "";
+    private String message = "Status";
 
 
 

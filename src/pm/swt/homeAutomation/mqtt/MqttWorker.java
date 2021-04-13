@@ -20,6 +20,7 @@ import pm.swt.homeAutomation.configurator.UILayoutManager;
 import pm.swt.homeAutomation.configurator.UISector;
 import pm.swt.homeAutomation.model.BatteryLevel;
 import pm.swt.homeAutomation.model.ConfigurationModel;
+import pm.swt.homeAutomation.model.StatusBar;
 import pm.swt.homeAutomation.model.TempHumSensor;
 import pm.swt.homeAutomation.model.TempPressureSensor;
 import pm.swt.homeAutomation.utils.DependencyIndector;
@@ -28,6 +29,8 @@ import pm.swt.homeAutomation.utils.GlobalResources;
 
 public class MqttWorker
 {
+    private static final String CAMERA_1_STATUS_TOPIC = "Synology_Camera1_Status";
+
     private static final char SECTOR_SEPARATOR = '/';
     private static final String MQTT_QOS_SUB_FOLDER = "mqttQOS";
 
@@ -112,6 +115,8 @@ public class MqttWorker
             List<String> topics = new ArrayList<>();
             for (UISector sector : layoutManager.getSectors())
                 topics.add(sector.getMqttTopic() + "/#");
+
+            topics.add(CAMERA_1_STATUS_TOPIC);
 
             int[] qos = new int[topics.size()];
             Arrays.fill(qos, 0);
@@ -251,6 +256,15 @@ public class MqttWorker
 
             System.out.println(String.format("MQTT message arrived.\nTopic: %s\nMessage: %s\n\n",
                     topic, messageStr));
+
+            if (topic.equals(CAMERA_1_STATUS_TOPIC))
+            {
+                DependencyIndector di = DependencyIndector.getInstance();
+                StatusBar model = (StatusBar)di.resolveInstance(GlobalResources.STATUS_BAR_INSTANCE_MODEL_NAME);
+                model.setMessage(String.format("Cam1: %s", messageStr));
+
+                return;
+            }
 
             String messageOrigin = topic.substring(0, topic.indexOf(SECTOR_SEPARATOR));
             String subTopic = topic.substring(topic.indexOf(SECTOR_SEPARATOR) + 1, topic.length());
