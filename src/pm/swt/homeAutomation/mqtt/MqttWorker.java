@@ -30,6 +30,7 @@ import pm.swt.homeAutomation.utils.GlobalResources;
 public class MqttWorker
 {
     private static final String CAMERA_1_STATUS_TOPIC = "Synology_Camera1_Status";
+    private static final String RELAY_SWITCHES_STATE_TOPIC = "outside_box_one";
 
     private static final char SECTOR_SEPARATOR = '/';
     private static final String MQTT_QOS_SUB_FOLDER = "mqttQOS";
@@ -116,7 +117,9 @@ public class MqttWorker
             for (UISector sector : layoutManager.getSectors())
                 topics.add(sector.getMqttTopic() + "/#");
 
-            topics.add(CAMERA_1_STATUS_TOPIC);
+            topics.addAll(Arrays.asList(
+                CAMERA_1_STATUS_TOPIC,
+                RELAY_SWITCHES_STATE_TOPIC + "/#"));
 
             int[] qos = new int[topics.size()];
             Arrays.fill(qos, 0);
@@ -261,13 +264,32 @@ public class MqttWorker
             {
                 DependencyIndector di = DependencyIndector.getInstance();
                 StatusBar model = (StatusBar)di.resolveInstance(GlobalResources.STATUS_BAR_INSTANCE_MODEL_NAME);
-                model.setMessage(String.format("Cam1: %s", messageStr));
+                model.setCam1Online(messageStr.equals("1") ? true : false);
 
                 return;
             }
 
             String messageOrigin = topic.substring(0, topic.indexOf(SECTOR_SEPARATOR));
             String subTopic = topic.substring(topic.indexOf(SECTOR_SEPARATOR) + 1, topic.length());
+
+            if (messageOrigin.equals(RELAY_SWITCHES_STATE_TOPIC))
+            {
+                DependencyIndector di = DependencyIndector.getInstance();
+                StatusBar model = (StatusBar)di.resolveInstance(GlobalResources.STATUS_BAR_INSTANCE_MODEL_NAME);
+
+                switch(subTopic)
+                {
+                    case "switch_one":
+                        model.setRelayOneState(messageStr.equals("1") ? true : false);
+                        return;
+
+                    case "switch_two":
+                        model.setRelayTwoState(messageStr.equals("1") ? true : false);
+                        return;
+                }
+
+                return;
+            }
 
             for (UISector uiSector : sectors)
             {

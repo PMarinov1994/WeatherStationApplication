@@ -2,10 +2,6 @@ package pm.swt.homeAutomation.view;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
@@ -13,8 +9,6 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -292,70 +286,6 @@ public abstract class BaseTempSensorView extends BaseView
         default:
             break;
         }
-    }
-
-
-
-    /**
-     * Creates an <code>Image</code> object from a given absolute or relative path.
-     * Note: The returned object must be disposed when not needed anymore!
-     *
-     * @param path The Path to the image.
-     * @return The created image object.
-     */
-    private Image getImageFromPath(String path)
-    {
-        InputStream is = null;
-        try
-        {
-            File imgFile = new File(path);
-            is = new FileInputStream(imgFile);
-        }
-        catch (FileNotFoundException e)
-        {
-            e.printStackTrace();
-        }
-
-        ImageData imgData = new ImageData(is);
-        Image img = new Image(this.getDisplay(), imgData);
-
-        return img;
-    }
-
-
-
-    /**
-     * This method clears any old images that the <code>label</code> may have
-     * and created a new image with the appropriate size to fill <code>label</code>.
-     * The <code>image</code> will be used only as reference to create the new image
-     * with the correct size.
-     *
-     * @param label The label control to switch the new image will be set.
-     * @param image A reference image from which the new image will be created.
-     * This image WILL NOT BE DISPOSED!
-     */
-    private void changeLabelImage(Label label, Image image)
-    {
-        if (image.isDisposed())
-        {
-            System.err.println("Error Image was disposed");
-            return;
-        }
-
-        Rectangle labelSize = label.getBounds();
-        if (labelSize.width == 0 || labelSize.height == 0)
-            return;
-
-        int size = Math.min(labelSize.width, labelSize.height);
-
-        Image oldImg = label.getImage();
-        Image newImg = new Image(BaseTempSensorView.this.getDisplay(),
-                image.getImageData().scaledTo(size, size));
-
-        label.setImage(newImg);
-
-        if (oldImg != null)
-            oldImg.dispose();
     }
 
 
