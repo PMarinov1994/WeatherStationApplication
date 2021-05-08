@@ -12,6 +12,9 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowData;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
@@ -100,7 +103,10 @@ public class StatusBarView extends BaseView
     @Override
     protected void createComposite(Composite parent)
     {
-        parent.setLayout(new FillLayout());
+        GridLayout layout = new GridLayout(8, false);
+        GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
+
+        parent.setLayout(layout);
 
         Color backgroundColor = parent.getDisplay().getSystemColor(SWT.COLOR_BLACK);
         Color foregroundColor = parent.getDisplay().getSystemColor(SWT.COLOR_WHITE);
@@ -111,8 +117,8 @@ public class StatusBarView extends BaseView
         // CLOCK LABEL
         timeLabel = new CLabel(parent, SWT.NONE);
         timeLabel.setBackground(backgroundColor);
-
         timeLabel.setForeground(foregroundColor);
+        timeLabel.setLayoutData(data);
         
         this.registerResizableControl(timeLabel);
         timeLabel.setText("00:00");
@@ -121,6 +127,7 @@ public class StatusBarView extends BaseView
         CLabel cam1StatusLabelText = new CLabel(parent, SWT.NONE);
         cam1StatusLabelText.setBackground(backgroundColor);
         cam1StatusLabelText.setForeground(foregroundColor);
+        cam1StatusLabelText.setLayoutData(data);
         
         this.registerResizableControl(cam1StatusLabelText);
         cam1StatusLabelText.setText("Cam1:");
@@ -128,21 +135,25 @@ public class StatusBarView extends BaseView
         // CAM 1 IMAGE
         this.cam1StatusLabel = new Label(parent, SWT.NONE);
         this.cam1StatusLabel.setBackground(backgroundColor);
+        this.cam1StatusLabel.setLayoutData(data);
+
         this.addLabelImageResizeHandle(this.cam1StatusLabel, () -> getCam1StatusImage());
-        this.addLabelImageDisposeHandle(this.cam1StatusLabel);
-        
+        this.addLabelImageDisposeHandle(this.cam1StatusLabel);        
 
         // RELAY ONE LABEL
         CLabel relaySwitchOneLabelText = new CLabel(parent, SWT.NONE);
         relaySwitchOneLabelText.setBackground(backgroundColor);
         relaySwitchOneLabelText.setForeground(foregroundColor);
+        relaySwitchOneLabelText.setLayoutData(data);
 
         this.registerResizableControl(relaySwitchOneLabelText);
-        relaySwitchOneLabelText.setText("SW2:");
+        relaySwitchOneLabelText.setText("SW1:");
 
         // RELAY ONE IMAGE
         this.relaySwitchOneLabel = new Label(parent, SWT.NONE);
         this.relaySwitchOneLabel.setBackground(backgroundColor);
+        this.relaySwitchOneLabel.setLayoutData(data);
+
         this.addLabelImageResizeHandle(this.relaySwitchOneLabel, () -> getPowerSwitchImage(viewModel.getRelayOneState()));
         this.addLabelImageDisposeHandle(this.relaySwitchOneLabel);
 
@@ -151,6 +162,7 @@ public class StatusBarView extends BaseView
         CLabel relaySwitchTwoLabelText = new CLabel(parent, SWT.NONE);
         relaySwitchTwoLabelText.setBackground(backgroundColor);
         relaySwitchTwoLabelText.setForeground(foregroundColor);
+        relaySwitchTwoLabelText.setLayoutData(data);
 
         this.registerResizableControl(relaySwitchTwoLabelText);
         relaySwitchTwoLabelText.setText("SW2:");
@@ -158,14 +170,16 @@ public class StatusBarView extends BaseView
         // RELAY TWO IMAGE
         this.relaySwitchTwoLabel = new Label(parent, SWT.NONE);
         this.relaySwitchTwoLabel.setBackground(backgroundColor);
+        this.relaySwitchTwoLabel.setLayoutData(data);
 
-        this.addLabelImageResizeHandle(this.relaySwitchTwoLabel, () -> getPowerSwitchImage(viewModel.getRelayOneState()));
+        this.addLabelImageResizeHandle(this.relaySwitchTwoLabel, () -> getPowerSwitchImage(viewModel.getRelayTwoState()));
         this.addLabelImageDisposeHandle(this.relaySwitchTwoLabel);
 
         // STATUS MESSAGE TEXT
         this.messageLabel = new CLabel(parent, SWT.None);
         this.messageLabel.setBackground(backgroundColor);
         this.messageLabel.setForeground(foregroundColor);
+        this.messageLabel.setLayoutData(data);
         
         this.registerResizableControl(this.messageLabel);
         this.messageLabel.setText("");

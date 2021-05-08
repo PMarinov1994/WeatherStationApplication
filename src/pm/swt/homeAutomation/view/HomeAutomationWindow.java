@@ -13,6 +13,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Monitor;
 import org.eclipse.swt.widgets.Shell;
 
 import pm.swt.homeAutomation.configurator.UILayoutManager;
@@ -82,14 +83,18 @@ public class HomeAutomationWindow
 
     public void show()
     {
+        shell.open();
+
         if (SystemInfo.getSystemType() == SystemType.LINUX &&
                 SystemInfo.getSystemArch() == SystemArch.ARM)
         {
-            shell.setMaximized(true);
-            shell.setFullScreen(true);
+            // shell.setMaximized(true);
+            Monitor monitor = shell.getDisplay().getPrimaryMonitor();
+            Rectangle monSize = monitor.getClientArea();
+    
+            shell.setSize(monSize.width, monSize.height);
+            shell.setFullScreen(true);  
         }
-
-        shell.open();
 
         this.onResize();
 
@@ -133,7 +138,7 @@ public class HomeAutomationWindow
         // If columns are to be made equal, set mainComp background to black.
         // or a while strip will be shown on the right since the columns do not fill
         // the space equally
-        GridLayout gridLayout = new GridLayout(GRID_COLS, false);
+        GridLayout gridLayout = new GridLayout(GRID_COLS, true);
         gridLayout.marginWidth = 0;
         gridLayout.marginHeight = 0;
         gridLayout.verticalSpacing = 0;
@@ -170,8 +175,8 @@ public class HomeAutomationWindow
 
     private void onResize()
     {
-        this.resizeChildCtrls(this.shell);
         shell.layout(true, true);
+        this.resizeChildCtrls(this.shell);
     }
 
 

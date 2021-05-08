@@ -1,7 +1,7 @@
 <project>
     <modelVersion>4.0.0</modelVersion>
-    <groupId>localdomain.localhost.tutorial</groupId>
-    <artifactId>java-archive</artifactId>
+    <groupId>pm.homeAutomation</groupId>
+    <artifactId>pm.swt.homeAutomation</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <build>
@@ -14,7 +14,6 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.2.0</version>
                 <configuration>
-                    <outputDirectory>${project.basedir}/build</outputDirectory>
                     <archive>
                         <manifest>
                             <mainClass>pm.swt.homeAutomation.ProgramEntry</mainClass>
@@ -34,7 +33,7 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>build//icons</outputDirectory>
+                            <outputDirectory>${project.build.directory}//icons</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>${project.basedir}/icons</directory>
@@ -50,7 +49,7 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>build//lib</outputDirectory>
+                            <outputDirectory>${project.build.directory}//lib</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>${project.basedir}/lib</directory>
@@ -66,7 +65,7 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>build/configuration</outputDirectory>
+                            <outputDirectory>${project.build.directory}/configuration</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>${project.basedir}/configuration</directory>
@@ -75,19 +74,6 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-
-            <plugin>
-                <artifactId>maven-clean-plugin</artifactId>
-                <version>3.1.0</version>
-                <configuration>
-                    <filesets>
-                        <fileset>
-                            <directory>${project.basedir}/build</directory>
-                            <directory>${project.basedir}/bin</directory>
-                        </fileset>
-                    </filesets>
-                </configuration>
             </plugin>
         </plugins>
 

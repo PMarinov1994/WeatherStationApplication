@@ -12,6 +12,7 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Point;
@@ -151,24 +152,45 @@ public abstract class BaseView extends Composite
 
     private void setNewFont(CLabel label)
     {
-        Font oldFont = this.resizableCLabels.get(label);
-
-        Point size = label.getSize();
-
+        // Point size = label.getSize();
+        Rectangle size = label.getClientArea();
         FontData[] fontData = label.getFont().getFontData();
 
         int textLen = label.getText().length();
         if (textLen == 0)
             return;
 
-        int charWidth = size.x / textLen;
-        fontData[0].setHeight(charWidth);
+        GC gc = new GC(label);
+        int stringWidth = gc.stringExtent(label.getText()).x;
+
+        double widthRatio = (double) size.width / (double) stringWidth;
+        
+        // Sometimes for unknow reason, fontData's height is 0. Setting it to 1 as initial value seems to work.
+        int fontHeight = fontData[0].getHeight() == 0 ? size.height : fontData[0].getHeight();
+        double newFontSize = fontHeight * widthRatio;
+
+        /*
+        System.out.println(String.format("TEXT: %s --- SIZE %d --- GC SIZE %d --- RATIO %f --- FONT HEIGHT %d --- NEW FONT SIZE %f",
+            label.getText(), 
+            size.width, 
+            stringWidth,
+            widthRatio,
+            fontHeight,
+            newFontSize));
+        */
+
+        fontData[0].setHeight((int)newFontSize);
 
         Font newFont = new Font(Display.getCurrent(), fontData[0]);
         label.setFont(newFont);
-        this.resizableCLabels.put(label, newFont);
 
+        // Clean up the old font, if we have created one.
+        Font oldFont = this.resizableCLabels.get(label);
         if (oldFont != null)
             oldFont.dispose();
+
+        this.resizableCLabels.put(label, newFont);
+
+        gc.dispose();
     }
 }
